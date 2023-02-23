@@ -140,6 +140,7 @@ namespace Aksolotl
                     SaveDataToFile("ch2.txt", ChannelData2);
                     break;
                 default:
+                    //comment схранение файла из канала
                     break;
             }
         }
