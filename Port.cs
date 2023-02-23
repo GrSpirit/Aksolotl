@@ -134,10 +134,10 @@ namespace Aksolotl
         {
             switch (channel) {
                 case Channel.ONE:
-                    SaveDataToFile("ch1.txt", ChannelData1);
+                    SaveDataToFile("channel1.txt", ChannelData1);
                     break;
                 case Channel.TWO:
-                    SaveDataToFile("ch2.txt", ChannelData2);
+                    SaveDataToFile("channel2.txt", ChannelData2);
                     break;
                 default:
                     break;
