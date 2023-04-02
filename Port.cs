@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -70,9 +71,10 @@ namespace Aksolotl
         public virtual IList<double> ChannelData1 { get { return channelData1; } }
         public virtual IList<double> ChannelData2 { get { return channelData2; } }
         protected int readBytes = 0;
-        protected byte[] buffer = new byte[4096];
+        protected byte[] buffer = new byte[1000];
 
         public event EventHandler Finished;
+        public event EventHandler Read;
         public abstract bool IsOpen { get; }
         public virtual PortMode Mode { get; set; }
         public virtual PortAccuracy Accuracy { get; set; }
@@ -91,6 +93,11 @@ namespace Aksolotl
             Finished?.Invoke(this, EventArgs.Empty);
         }
 
+        protected virtual void OnRead()
+        {
+            Read?.Invoke(this, EventArgs.Empty);
+        }
+
         /// <summary>
         /// Converts data from the buffer to voltage and splits into 2 channels
         /// </summary>
@@ -98,13 +105,14 @@ namespace Aksolotl
         /// <param name="length">buffer length</param>
         protected virtual void SplitData(byte[] buffer, int length)
         {
-            for (int i = 0; i * 2 + 1 < length; i += 2) {
-                UInt16 data = buffer[2 * i + 1];
+            for (int i = 0; i < length;) {
+                UInt16 data = buffer[i++];
                 data <<= 8;
-                data |= buffer[2 * i];
-                if ((data & (1 << 1)) == (1 << 1)) {
+                data |= buffer[i++];
+                UInt16 userData = (UInt16)(data >> 12);
+                data &= 0xFFF;
+                if ((userData & (1 << 1)) == (1 << 1)) {
                     ChannelData2.Add(ConvertWolt(data));
-
                 }
                 else {
                     ChannelData1.Add(ConvertWolt(data));
@@ -150,7 +158,8 @@ namespace Aksolotl
         SerialPort port = new SerialPort();
         public Port()
         {
-            port.BaudRate = 9600;
+            //port.BaudRate = 9600;
+            port.BaudRate = 480000 * 12;
             port.ReadBufferSize = buffer.Length;
             port.Parity = Parity.None;
             port.Handshake = Handshake.None;
@@ -189,17 +198,19 @@ namespace Aksolotl
             // Устанавливаем режим работы std/dfm
             Init();
             base.Open(portName);
-            while (readBytes < 100) {
+            while (true) {
                 int n = port.Read(buffer, 0, Math.Min(buffer.Length, port.BytesToRead));
                 SplitData(buffer, n);
                 readBytes += n;
                 DumpData(buffer, n);
+                OnRead();
+                System.Threading.Thread.Sleep(100);
             }
             OnFinish();
         }
         void DumpData(byte[] data, int length)
         {
-            FileStream fs = new FileStream("raw.dmp", FileMode.Append);
+            FileStream fs = new FileStream("raw.dmp", FileMode.Create);
             BinaryWriter writer = new BinaryWriter(fs);
             writer.Write(data, 0, length);
             writer.Close();
@@ -217,7 +228,8 @@ namespace Aksolotl
             readBytes += n;
             DumpData(buffer, n);
             //if (readBytes >= MAX_BYTES_TO_READ) {
-                OnFinish();
+            //OnFinish();
+            OnRead();
             //}
         }
     }

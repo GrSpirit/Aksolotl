@@ -13,7 +13,7 @@ namespace Aksolotl
         Random r = new Random();
         public int Generate(byte[] data, int offset, int size)
         {
-            for (int i = offset; i * 2 < size; i += 2) {
+            for (int i = offset; i < size;) {
                 byte chan = (byte)(r.Next(0, 2) << 1);
                 UInt16 d = 0;
                 if (chan == 0) {
@@ -27,8 +27,8 @@ namespace Aksolotl
                     x2 += Math.PI / 100;
                 }
                 
-                data[2 * i] = (byte)(d >> 8);
-                data[2 * i + 1] = (byte)(d);
+                data[i++] = (byte)(d >> 8);
+                data[i++] = (byte)(d);
             }
             return size - offset;
             
@@ -36,8 +36,7 @@ namespace Aksolotl
         private UInt16 Pack(double x, byte chan)
         {
             UInt16 d = (UInt16)(x * 4096 / 3.3);
-            d <<= 4;
-            d |= (byte)(chan | 0xD);
+            d |= (UInt16)((UInt16)(chan | 0xD) << 12);
             return d;
         }
     }

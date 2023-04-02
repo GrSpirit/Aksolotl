@@ -16,7 +16,7 @@ namespace Aksolotl
 {
     public partial class Form1 : Form
     {
-        const int MAX_POINTS_TO_SHOW = 300;
+        const int MAX_POINTS_TO_SHOW = 1000;
         private readonly Port serialPort = new Port();
         private readonly PortMock fakePort = new PortMock();
         private IPort Port {
@@ -30,6 +30,8 @@ namespace Aksolotl
             InitializeComponent();
             serialPort.Finished += Visualize;
             fakePort.Finished += Visualize;
+            serialPort.Read += Visualize;
+            fakePort.Read += Visualize;
         }
 
         public bool UseMock { get { return mockCheckBox.Checked; } }
@@ -97,16 +99,24 @@ namespace Aksolotl
 
         private void Visualize(object sender, EventArgs e)
         {
-            chart1.Series[0].Points.Clear();
+            //chart1.Series[0].Points.Clear();
             IPort port = (IPort)sender;
             for (int i = 0; i < Math.Min(MAX_POINTS_TO_SHOW, port.ChannelData1.Count); i++) {
+                if (chart1.Series[0].Points.Count > MAX_POINTS_TO_SHOW) {
+                    chart1.Series[0].Points.Clear();
+                }
                 this.chart1.Series[0].Points.AddXY(i, port.ChannelData1[i]);
             }
+            port.ChannelData1.Clear();
 
-            chart1.Series[1].Points.Clear();
+            //chart1.Series[1].Points.Clear();
             for (int i = 0; i < Math.Min(MAX_POINTS_TO_SHOW, port.ChannelData2.Count); i++) {
+                if (chart1.Series[1].Points.Count > MAX_POINTS_TO_SHOW) {
+                    chart1.Series[1].Points.Clear();
+                }
                 this.chart1.Series[1].Points.AddXY(i, port.ChannelData2[i]);
             }
+            port.ChannelData2.Clear();
         }
 
         private void accuracyRadioButton15_CheckedChanged(object sender, EventArgs e)
