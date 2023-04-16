@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
@@ -16,9 +17,10 @@ namespace Aksolotl
 {
     public partial class Form1 : Form
     {
-        const int MAX_POINTS_TO_SHOW = 1000;
+        const int MAX_POINTS_TO_SHOW = 300;
         private readonly Port serialPort = new Port();
         private readonly PortMock fakePort = new PortMock();
+        private Thread portThread;
         private IPort Port {
             get {
                 if (UseMock) return fakePort;
@@ -43,18 +45,25 @@ namespace Aksolotl
             comboBox1.Items.Clear();
             //Добавление найденных портов в бокс
             comboBox1.Items.AddRange(ports);
+            run_stop.Text = "run";
         }
 
         private void run_stop_Click(object sender, EventArgs e)
         {
             try {
                 if (Port.IsOpen) {
-                    Port.Close();
+                    run_stop.Text = "run";
+                    //Port.Close();
+                    backgroundWorker1.CancelAsync();
                 }
                 else {
-                    Port.Open(comboBox1.Text);
+                    run_stop.Text = "stop";
+                    backgroundWorker1.RunWorkerAsync(comboBox1.Text);
+                    //Port.Open(comboBox1.Text);
+                    timer1.Start();
                 }
             } catch (EmptyPortNameException) {
+                run_stop.Text = "run";
                 MessageBox.Show("Выберите порт для начала", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -129,6 +138,42 @@ namespace Aksolotl
             if (Port.IsOpen) {
                 Port.Init();
             }
+        }
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try {
+                Port.Open((string)e.Argument, () => { return backgroundWorker1.CancellationPending; });
+            }
+            catch (EmptyPortNameException) {
+                MessageBox.Show("Выберите порт для начала", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            run_stop.Text = "run";
+            timer1.Stop();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            List<double> channelData1 = new List<double>();
+            List<double> channelData2 = new List<double>();
+            Port.GetData(channelData1, channelData2, MAX_POINTS_TO_SHOW);
+            for (int i = 0; i < Math.Min(MAX_POINTS_TO_SHOW, channelData1.Count); i++) {
+                if (chart1.Series[0].Points.Count > MAX_POINTS_TO_SHOW) {
+                    chart1.Series[0].Points.Clear();
+                }
+                this.chart1.Series[0].Points.AddXY(i, channelData1[i]);
+            }
+            //chart1.Series[1].Points.Clear();
+            for (int i = 0; i < Math.Min(MAX_POINTS_TO_SHOW, channelData2.Count); i++) {
+                if (chart1.Series[1].Points.Count > MAX_POINTS_TO_SHOW) {
+                    chart1.Series[1].Points.Clear();
+                }
+                this.chart1.Series[1].Points.AddXY(i, channelData2[i]);
+            }
+
         }
     }
 

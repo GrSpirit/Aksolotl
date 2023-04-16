@@ -25,6 +25,7 @@ namespace Aksolotl
         ONE,
         TWO
     }
+    delegate bool IsProcessCanceled();
     interface IPort
     {
         /// <summary>
@@ -35,7 +36,7 @@ namespace Aksolotl
         /// Открыть порт и инициализировать с ним работу
         /// </summary>
         /// <param name="portName">имя порта</param>
-        void Open(string portName);
+        void Open(string portName, IsProcessCanceled processCanceled);
         void Init();
         /// <summary>
         /// Закрыть порт
@@ -59,6 +60,7 @@ namespace Aksolotl
         /// </summary>
         /// <param name="channel">номер канала</param>
         void Save(Channel channel);
+        void GetData(List<double> channel1, List<double> channel2, int count);
     }
     abstract class APortBase : IPort
     {
@@ -66,6 +68,8 @@ namespace Aksolotl
         /// Максимальное число байт вычитываемых из порта
         /// </summary>
         public const int MAX_BYTES_TO_READ = 1024 * 1024;
+        protected Object obj = new Object();
+        protected IsProcessCanceled processCanceled;
         private readonly List<double> channelData1 = new List<double>();
         private readonly List<double> channelData2 = new List<double>();
         public virtual IList<double> ChannelData1 { get { return channelData1; } }
@@ -79,9 +83,10 @@ namespace Aksolotl
         public virtual PortMode Mode { get; set; }
         public virtual PortAccuracy Accuracy { get; set; }
         public abstract void Init();
-        public virtual void Open(string portName)
+        public virtual void Open(string portName, IsProcessCanceled processCanceled)
         {
             readBytes = 0;
+            this.processCanceled = processCanceled;
             channelData1.Clear();
             channelData2.Clear();
         }
@@ -105,17 +110,40 @@ namespace Aksolotl
         /// <param name="length">buffer length</param>
         protected virtual void SplitData(byte[] buffer, int length)
         {
-            for (int i = 0; i < length;) {
-                UInt16 data = buffer[i++];
-                data <<= 8;
-                data |= buffer[i++];
-                UInt16 userData = (UInt16)(data >> 12);
-                data &= 0xFFF;
-                if ((userData & (1 << 1)) == (1 << 1)) {
-                    ChannelData2.Add(ConvertWolt(data));
+            lock (obj) {
+                int offset = 0;
+
+                // Ищем начало данных
+                while (offset + 1 < length) {
+                    if (buffer[offset] == 0xAD && buffer[offset + 1] == 0xDE) {
+                        offset += 2;
+                        break;
+                    }
+                    offset++;
                 }
-                else {
-                    ChannelData1.Add(ConvertWolt(data));
+
+                // Данных нет
+                if (offset + 1 >= length) {
+                    return;
+                }
+
+                // Определяем канал
+                UInt16 userData = buffer[offset + 1];
+                userData <<= 8;
+                userData |= buffer[offset];
+                offset += 2;
+
+                var channel = (userData & (1 << 1)) == (1 << 1) ? ChannelData2 : ChannelData1;
+
+                for (int i = offset; i < length;) {
+                    UInt16 data = buffer[i + 1];
+                    data <<= 8;
+                    data |= buffer[i];
+                    i += 2;
+                    if (channel.Count >= MAX_BYTES_TO_READ) {
+                        channel.Clear();
+                    }
+                    channel.Add(ConvertWolt(data));
                 }
             }
         }
@@ -151,9 +179,16 @@ namespace Aksolotl
                     break;
             }
         }
+        public virtual void GetData(List<double> channel1, List<double> channel2, int count)
+        {
+            lock (obj) {
+                channel1.AddRange(ChannelData1.Skip(Math.Max(0, ChannelData1.Count - count)).Take(Math.Min(count, ChannelData1.Count)));
+                channel2.AddRange(ChannelData2.Skip(Math.Max(0, ChannelData2.Count - count)).Take(Math.Min(count, ChannelData2.Count)));
+            }
+        }
     }
 
-    class Port: APortBase
+    class Port : APortBase
     {
         SerialPort port = new SerialPort();
         public Port()
@@ -188,7 +223,7 @@ namespace Aksolotl
         /// Initiate and open port
         /// </summary>
         /// <param name="portName">port name</param>
-        public override void Open(string portName)
+        public override void Open(string portName, IsProcessCanceled processCanceled)
         {
             if (String.IsNullOrWhiteSpace(portName)) {
                 throw new EmptyPortNameException();
@@ -197,16 +232,13 @@ namespace Aksolotl
             port.Open();
             // Устанавливаем режим работы std/dfm
             Init();
-            base.Open(portName);
-            while (true) {
+            base.Open(portName, processCanceled);
+            while (!processCanceled()) {
                 int n = port.Read(buffer, 0, Math.Min(buffer.Length, port.BytesToRead));
                 SplitData(buffer, n);
                 readBytes += n;
                 DumpData(buffer, n);
-                OnRead();
-                System.Threading.Thread.Sleep(100);
             }
-            OnFinish();
         }
         void DumpData(byte[] data, int length)
         {
@@ -216,23 +248,8 @@ namespace Aksolotl
             writer.Close();
             fs.Close();
         }
-        /// <summary>
-        /// Событие для получения данных из порта
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            int n = port.Read(buffer, 0, Math.Min(buffer.Length, port.BytesToRead));
-            SplitData(buffer, n);
-            readBytes += n;
-            DumpData(buffer, n);
-            //if (readBytes >= MAX_BYTES_TO_READ) {
-            //OnFinish();
-            OnRead();
-            //}
-        }
     }
+
 
     class PortMock: APortBase
     {
@@ -251,20 +268,21 @@ namespace Aksolotl
             
         }
 
-        public override void Open(string portName) 
+        public override void Open(string portName, IsProcessCanceled processCanceled) 
         {
             isOpen = true;
-            base.Open(portName);
+            base.Open(portName, processCanceled);
             GenerateData();
         }
         private void GenerateData()
         {
-            while (readBytes <= MAX_BYTES_TO_READ) {
+            while (!processCanceled()) {
                 int n = mock.Generate(buffer, 0, buffer.Length);
                 SplitData(buffer, n);
                 readBytes += n;
+                Thread.Sleep(20);
             }
-            OnFinish();
+            //OnFinish();
         }
     }
 
