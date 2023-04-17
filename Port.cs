@@ -127,23 +127,29 @@ namespace Aksolotl
                     return;
                 }
 
-                // Определяем канал
-                UInt16 userData = buffer[offset + 1];
-                userData <<= 8;
-                userData |= buffer[offset];
-                offset += 2;
+                int n = (length - offset) / 2;
+                UInt16[] data16 = new UInt16[n];
+                Buffer.BlockCopy(buffer, offset, data16, 0, 2 * n);
 
+                // Определяем канал
+                UInt16 userData = data16[0];
                 var channel = (userData & (1 << 1)) == (1 << 1) ? ChannelData2 : ChannelData1;
 
-                for (int i = offset; i < length;) {
-                    UInt16 data = buffer[i + 1];
-                    data <<= 8;
-                    data |= buffer[i];
-                    i += 2;
+                for (int i = 1; i < n; i++) {
                     if (channel.Count >= MAX_BYTES_TO_READ) {
                         channel.Clear();
                     }
-                    channel.Add(ConvertWolt(data));
+                    var d = data16[i];
+                    if (d == 0xDEAD) {
+                        if (i + 1 < (length - offset) / 2) {
+                            userData = data16[i + 1];
+                            channel = (userData & (1 << 1)) == (1 << 1) ? ChannelData2 : ChannelData1;
+                            i++;
+                        }
+                    }
+                    else {
+                        channel.Add(ConvertWolt(data16[i]));
+                    }
                 }
             }
         }

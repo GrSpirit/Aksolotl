@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.run_stop = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.checkBox_out_ch1 = new System.Windows.Forms.CheckBox();
@@ -54,17 +54,25 @@
             this.accuracyGroupBox = new System.Windows.Forms.GroupBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.numPointsBox = new System.Windows.Forms.TextBox();
+            this.numPointsTrackBar = new System.Windows.Forms.TrackBar();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.frequencyComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.accuracyGroupBox.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPointsTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // run_stop
             // 
-            this.run_stop.Location = new System.Drawing.Point(468, 12);
+            this.run_stop.Location = new System.Drawing.Point(702, 25);
             this.run_stop.Name = "run_stop";
             this.run_stop.Size = new System.Drawing.Size(75, 23);
             this.run_stop.TabIndex = 0;
@@ -74,28 +82,28 @@
             // 
             // chart1
             // 
-            chartArea4.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chart1.Legends.Add(legend4);
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chart1.Legends.Add(legend3);
             this.chart1.Location = new System.Drawing.Point(6, 19);
             this.chart1.Name = "chart1";
-            series7.BorderWidth = 3;
-            series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series7.Color = System.Drawing.Color.Red;
-            series7.Legend = "Legend1";
-            series7.LegendText = "CH1";
-            series7.Name = "Series1";
-            series8.BorderWidth = 3;
-            series8.ChartArea = "ChartArea1";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series8.Color = System.Drawing.Color.Blue;
-            series8.Legend = "Legend1";
-            series8.LegendText = "CH2";
-            series8.Name = "Series2";
-            this.chart1.Series.Add(series7);
-            this.chart1.Series.Add(series8);
+            series5.BorderWidth = 3;
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Color = System.Drawing.Color.Red;
+            series5.Legend = "Legend1";
+            series5.LegendText = "CH1";
+            series5.Name = "Series1";
+            series6.BorderWidth = 3;
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Color = System.Drawing.Color.Blue;
+            series6.Legend = "Legend1";
+            series6.LegendText = "CH2";
+            series6.Name = "Series2";
+            this.chart1.Series.Add(series5);
+            this.chart1.Series.Add(series6);
             this.chart1.Size = new System.Drawing.Size(878, 572);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "Graf";
@@ -231,7 +239,7 @@
             // checkBox_fft
             // 
             this.checkBox_fft.AutoSize = true;
-            this.checkBox_fft.Location = new System.Drawing.Point(685, 37);
+            this.checkBox_fft.Location = new System.Drawing.Point(727, 66);
             this.checkBox_fft.Name = "checkBox_fft";
             this.checkBox_fft.Size = new System.Drawing.Size(45, 17);
             this.checkBox_fft.TabIndex = 13;
@@ -242,7 +250,7 @@
             // mockCheckBox
             // 
             this.mockCheckBox.AutoSize = true;
-            this.mockCheckBox.Location = new System.Drawing.Point(685, 54);
+            this.mockCheckBox.Location = new System.Drawing.Point(727, 83);
             this.mockCheckBox.Name = "mockCheckBox";
             this.mockCheckBox.Size = new System.Drawing.Size(50, 17);
             this.mockCheckBox.TabIndex = 14;
@@ -295,11 +303,78 @@
             this.timer1.Interval = 2000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.numPointsBox);
+            this.groupBox5.Controls.Add(this.numPointsTrackBar);
+            this.groupBox5.Controls.Add(this.label3);
+            this.groupBox5.Controls.Add(this.label2);
+            this.groupBox5.Controls.Add(this.frequencyComboBox);
+            this.groupBox5.Location = new System.Drawing.Point(444, 12);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(252, 100);
+            this.groupBox5.TabIndex = 11;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Отображение";
+            // 
+            // numPointsBox
+            // 
+            this.numPointsBox.Enabled = false;
+            this.numPointsBox.Location = new System.Drawing.Point(6, 59);
+            this.numPointsBox.Name = "numPointsBox";
+            this.numPointsBox.Size = new System.Drawing.Size(49, 20);
+            this.numPointsBox.TabIndex = 4;
+            this.numPointsBox.Text = "300";
+            // 
+            // numPointsTrackBar
+            // 
+            this.numPointsTrackBar.LargeChange = 100;
+            this.numPointsTrackBar.Location = new System.Drawing.Point(61, 43);
+            this.numPointsTrackBar.Maximum = 1000;
+            this.numPointsTrackBar.Minimum = 100;
+            this.numPointsTrackBar.Name = "numPointsTrackBar";
+            this.numPointsTrackBar.Size = new System.Drawing.Size(185, 45);
+            this.numPointsTrackBar.SmallChange = 50;
+            this.numPointsTrackBar.TabIndex = 3;
+            this.numPointsTrackBar.Value = 300;
+            this.numPointsTrackBar.ValueChanged += new System.EventHandler(this.numPointsTrackBar_ValueChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 43);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(37, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Точек";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 21);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(49, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Частота";
+            // 
+            // frequencyComboBox
+            // 
+            this.frequencyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.frequencyComboBox.FormattingEnabled = true;
+            this.frequencyComboBox.Items.AddRange(new object[] {
+            "856 кГц (F103 DMA + ACP)",
+            "1712 кГц (F103 DMA + 2ACP)"});
+            this.frequencyComboBox.Location = new System.Drawing.Point(61, 18);
+            this.frequencyComboBox.Name = "frequencyComboBox";
+            this.frequencyComboBox.Size = new System.Drawing.Size(185, 21);
+            this.frequencyComboBox.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(926, 737);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.accuracyGroupBox);
             this.Controls.Add(this.mockCheckBox);
             this.Controls.Add(this.checkBox_fft);
@@ -320,6 +395,9 @@
             this.groupBox4.ResumeLayout(false);
             this.accuracyGroupBox.ResumeLayout(false);
             this.accuracyGroupBox.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPointsTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -348,6 +426,12 @@
         private System.Windows.Forms.GroupBox accuracyGroupBox;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox frequencyComboBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TrackBar numPointsTrackBar;
+        private System.Windows.Forms.TextBox numPointsBox;
     }
 }
 

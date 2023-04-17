@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +10,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,13 +22,18 @@ namespace Aksolotl
         const int MAX_POINTS_TO_SHOW = 300;
         private readonly Port serialPort = new Port();
         private readonly PortMock fakePort = new PortMock();
-        private Thread portThread;
         private IPort Port {
             get {
                 if (UseMock) return fakePort;
                 return serialPort;
             }
         }
+        private class FrequencyItem
+        {
+            public string Text { get; set; }
+            public int Value { get; set; }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -46,6 +53,14 @@ namespace Aksolotl
             //Добавление найденных портов в бокс
             comboBox1.Items.AddRange(ports);
             run_stop.Text = "run";
+            var frequencies = new List<FrequencyItem>() {
+                new FrequencyItem { Text = "856 кГц (F103 DMA + ACP)", Value = 856 },
+                new FrequencyItem { Text = "1712 кГц (F103 DMA + 2ACP)", Value = 1712 }
+            };
+            frequencyComboBox.DataSource = frequencies;
+            frequencyComboBox.DisplayMember = "Text";
+            frequencyComboBox.ValueMember = "Value";
+            frequencyComboBox.SelectedIndex = 0;
         }
 
         private void run_stop_Click(object sender, EventArgs e)
@@ -157,23 +172,28 @@ namespace Aksolotl
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            List<double> channelData1 = new List<double>();
-            List<double> channelData2 = new List<double>();
-            Port.GetData(channelData1, channelData2, MAX_POINTS_TO_SHOW);
-            for (int i = 0; i < Math.Min(MAX_POINTS_TO_SHOW, channelData1.Count); i++) {
-                if (chart1.Series[0].Points.Count > MAX_POINTS_TO_SHOW) {
-                    chart1.Series[0].Points.Clear();
-                }
-                this.chart1.Series[0].Points.AddXY(i, channelData1[i]);
+            int pointsToShow = int.Parse(numPointsBox.Text, System.Globalization.NumberStyles.None);
+            List<double> channelData1 = new List<double>(pointsToShow);
+            List<double> channelData2 = new List<double>(pointsToShow);
+            Port.GetData(channelData1, channelData2, pointsToShow);
+            int frequency = (int)frequencyComboBox.SelectedValue;
+            double period = 1.0 / (double)frequency;
+            chart1.Series[0].Points.Clear();
+            for (int i = 0; i < Math.Min(pointsToShow, channelData1.Count); i++) {
+                double x = Math.Round(i * period, 3);
+                this.chart1.Series[0].Points.AddXY(x, channelData1[i]);
             }
-            //chart1.Series[1].Points.Clear();
-            for (int i = 0; i < Math.Min(MAX_POINTS_TO_SHOW, channelData2.Count); i++) {
-                if (chart1.Series[1].Points.Count > MAX_POINTS_TO_SHOW) {
-                    chart1.Series[1].Points.Clear();
-                }
-                this.chart1.Series[1].Points.AddXY(i, channelData2[i]);
+            chart1.Series[1].Points.Clear();
+            for (int i = 0; i < Math.Min(pointsToShow, channelData2.Count); i++) {
+                double x = Math.Round(i * period, 3);
+                this.chart1.Series[1].Points.AddXY(x, channelData2[i]);
             }
 
+        }
+
+        private void numPointsTrackBar_ValueChanged(object sender, EventArgs e)
+        {
+            numPointsBox.Text = numPointsTrackBar.Value.ToString();
         }
     }
 

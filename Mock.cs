@@ -11,7 +11,6 @@ namespace Aksolotl
     {
         double x1 = 0;
         double x2 = 0;
-        Random r = new Random();
         delegate double Simulator();
 
         double Channel1()
@@ -21,14 +20,14 @@ namespace Aksolotl
         }
         double Channel2()
         {
-            x2 += Math.PI / 50;
-            return Math.Sin(x2) + 1;
+            x2 += Math.PI / 25;
+            return Math.Sin(x2) / 2 + 1;
         }
 
         int MakeData(byte[] data8, int offset, int count, int chan)
         {
             int i = 0;
-            int n = (count - offset) / 2;
+            int n = count / 2;
             if (n == 0) { return 0; }
             UInt16[] data16 = new ushort[n];
             data16[i++] = 0xDEAD;
