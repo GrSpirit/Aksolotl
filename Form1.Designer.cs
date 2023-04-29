@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.run_stop = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.checkBox_out_ch1 = new System.Windows.Forms.CheckBox();
@@ -60,6 +60,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.frequencyComboBox = new System.Windows.Forms.ComboBox();
+            this.saveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -82,28 +83,28 @@
             // 
             // chart1
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(6, 19);
             this.chart1.Name = "chart1";
-            series5.BorderWidth = 3;
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Color = System.Drawing.Color.Red;
-            series5.Legend = "Legend1";
-            series5.LegendText = "CH1";
-            series5.Name = "Series1";
-            series6.BorderWidth = 3;
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series6.Color = System.Drawing.Color.Blue;
-            series6.Legend = "Legend1";
-            series6.LegendText = "CH2";
-            series6.Name = "Series2";
-            this.chart1.Series.Add(series5);
-            this.chart1.Series.Add(series6);
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = System.Drawing.Color.Red;
+            series1.Legend = "Legend1";
+            series1.LegendText = "CH1";
+            series1.Name = "Series1";
+            series2.BorderWidth = 3;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Color = System.Drawing.Color.Blue;
+            series2.Legend = "Legend1";
+            series2.LegendText = "CH2";
+            series2.Name = "Series2";
+            this.chart1.Series.Add(series1);
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(878, 572);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "Graf";
@@ -178,12 +179,13 @@
             // 
             // comboBox1
             // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(40, 70);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(59, 21);
             this.comboBox1.TabIndex = 14;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBox1.DropDown += new System.EventHandler(this.comboBox1_DropDown);
             // 
             // label1
             // 
@@ -330,12 +332,13 @@
             // 
             this.numPointsTrackBar.LargeChange = 100;
             this.numPointsTrackBar.Location = new System.Drawing.Point(61, 43);
-            this.numPointsTrackBar.Maximum = 1000;
+            this.numPointsTrackBar.Maximum = 200000;
             this.numPointsTrackBar.Minimum = 100;
             this.numPointsTrackBar.Name = "numPointsTrackBar";
             this.numPointsTrackBar.Size = new System.Drawing.Size(185, 45);
             this.numPointsTrackBar.SmallChange = 50;
             this.numPointsTrackBar.TabIndex = 3;
+            this.numPointsTrackBar.TickFrequency = 100;
             this.numPointsTrackBar.Value = 300;
             this.numPointsTrackBar.ValueChanged += new System.EventHandler(this.numPointsTrackBar_ValueChanged);
             // 
@@ -361,13 +364,17 @@
             // 
             this.frequencyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.frequencyComboBox.FormattingEnabled = true;
-            this.frequencyComboBox.Items.AddRange(new object[] {
-            "856 кГц (F103 DMA + ACP)",
-            "1712 кГц (F103 DMA + 2ACP)"});
             this.frequencyComboBox.Location = new System.Drawing.Point(61, 18);
             this.frequencyComboBox.Name = "frequencyComboBox";
             this.frequencyComboBox.Size = new System.Drawing.Size(185, 21);
             this.frequencyComboBox.TabIndex = 0;
+            // 
+            // saveCsvFileDialog
+            // 
+            this.saveCsvFileDialog.DefaultExt = "csv";
+            this.saveCsvFileDialog.Filter = "CSV Files|*.csv|All Files|*.*";
+            this.saveCsvFileDialog.RestoreDirectory = true;
+            this.saveCsvFileDialog.Title = "Save signal values";
             // 
             // Form1
             // 
@@ -432,6 +439,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TrackBar numPointsTrackBar;
         private System.Windows.Forms.TextBox numPointsBox;
+        private System.Windows.Forms.SaveFileDialog saveCsvFileDialog;
     }
 }
 

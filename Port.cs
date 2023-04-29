@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Aksolotl
 {
+
     enum PortMode: byte
     {
         DFM = 0b11110001,
@@ -59,7 +61,7 @@ namespace Aksolotl
         /// Записать полученные данные в файл
         /// </summary>
         /// <param name="channel">номер канала</param>
-        void Save(Channel channel);
+        void Save(Channel channel, string fileName);
         void GetData(List<double> channel1, List<double> channel2, int count);
     }
     abstract class APortBase : IPort
@@ -67,7 +69,7 @@ namespace Aksolotl
         /// <summary>
         /// Максимальное число байт вычитываемых из порта
         /// </summary>
-        public const int MAX_BYTES_TO_READ = 1024 * 1024;
+        public const int MAX_BYTES_TO_READ = 20 * 1024 * 1024;
         protected Object obj = new Object();
         protected IsProcessCanceled processCanceled;
         private readonly List<double> channelData1 = new List<double>();
@@ -172,14 +174,14 @@ namespace Aksolotl
                 writer.Write(";");
             }
         }
-        public virtual void Save(Channel channel)
+        public virtual void Save(Channel channel, string fileName)
         {
             switch (channel) {
                 case Channel.ONE:
-                    SaveDataToFile("ch1.txt", ChannelData1);
+                    SaveDataToFile(fileName, ChannelData1);
                     break;
                 case Channel.TWO:
-                    SaveDataToFile("ch2.txt", ChannelData2);
+                    SaveDataToFile(fileName, ChannelData2);
                     break;
                 default:
                     break;
@@ -239,11 +241,18 @@ namespace Aksolotl
             // Устанавливаем режим работы std/dfm
             Init();
             base.Open(portName, processCanceled);
-            while (!processCanceled()) {
-                int n = port.Read(buffer, 0, Math.Min(buffer.Length, port.BytesToRead));
-                SplitData(buffer, n);
-                readBytes += n;
-                DumpData(buffer, n);
+            try {
+                while (port.IsOpen && !processCanceled()) {
+                    int n = port.Read(buffer, 0, Math.Min(buffer.Length, port.BytesToRead));
+                    if (n > 0) {
+                        SplitData(buffer, n);
+                        readBytes += n;
+                        DumpData(buffer, n);
+                    }
+                    Thread.Sleep(10);
+                }
+            } catch (Exception ex) {
+                MessageBox.Show(ex.Message);
             }
         }
         void DumpData(byte[] data, int length)
