@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MathNet.Filtering;
 
 namespace Aksolotl
 {
@@ -52,8 +53,9 @@ namespace Aksolotl
             run_stop.Text = "run";
             var frequencies = new List<FrequencyItem>() {
                 new FrequencyItem { Text = "856 кГц (F103 DMA + ACP)", Value = 856 },
-                new FrequencyItem { Text = "1712 кГц (F103 DMA + 2ACP)", Value = 1712 },
-                new FrequencyItem { Text = "2000 кГц (F407 DMA + 1ACP)", Value = 2000 }
+                new FrequencyItem { Text = "1,71 МГц (F103 DMA + 2ACP)", Value = 1712 },
+                new FrequencyItem { Text = "2,00 МГц (F407 DMA + 1ACP)", Value = 2000 },
+                new FrequencyItem { Text = "3,75 МГц (F407 DMA + 2ACP)", Value = 3750 }
             };
             frequencyComboBox.DataSource = frequencies;
             frequencyComboBox.DisplayMember = "Text";
@@ -147,8 +149,20 @@ namespace Aksolotl
             Port.GetData(channelData1, channelData2, totalPoints);
             int frequency = (int)frequencyComboBox.SelectedValue;
             double period = 1000.0 / (double)frequency;
-            chart1.Series[0].Points.Clear();
             int pointsToSkip = totalPoints / pointsToShow - 1;
+
+            if (digitalFilterCheckBox.Checked) {
+                var coeff = MathNet.Filtering.FIR.FirCoefficients.LowPass(2000000, 2);
+                var filter = new MathNet.Filtering.FIR.OnlineFirFilter(coeff);
+                double[] filtered= filter.ProcessSamples(channelData1.ToArray());
+                channelData1.Clear();
+                channelData1.AddRange(filtered);
+                filtered = filter.ProcessSamples(channelData2.ToArray());
+                channelData2.Clear();
+                channelData2.AddRange(filtered);
+            }
+
+            chart1.Series[0].Points.Clear();
             int j = 0;
             for (int i = 0; i < channelData1.Count; i++) {
                 if (j >= pointsToSkip) {

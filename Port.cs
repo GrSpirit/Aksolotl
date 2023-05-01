@@ -82,7 +82,8 @@ namespace Aksolotl
         public event EventHandler Finished;
         public event EventHandler Read;
         public abstract bool IsOpen { get; }
-        public virtual PortMode Mode { get; set; }
+        private PortMode mode = PortMode.STD;
+        public virtual PortMode Mode { get { return mode; } set { mode = value; } }
         public virtual PortAccuracy Accuracy { get; set; }
         public abstract void Init();
         public virtual void Open(string portName, IsProcessCanceled processCanceled)
@@ -217,9 +218,11 @@ namespace Aksolotl
             buffer[0] = (byte)Mode;
             port.Write(buffer, 0, 1);
             Thread.Sleep(100);
-            buffer[0] = (byte)Accuracy;
-            port.Write(buffer, 0, 1);
-            Thread.Sleep(100);
+            ChannelData1.Clear();
+            ChannelData2.Clear();
+            // buffer[0] = (byte)Accuracy;
+            // port.Write(buffer, 0, 1);
+            // Thread.Sleep(100);
         }
 
         public override void Close()

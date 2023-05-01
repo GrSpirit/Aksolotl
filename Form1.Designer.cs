@@ -61,6 +61,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.frequencyComboBox = new System.Windows.Forms.ComboBox();
             this.saveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.digitalFilterCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -103,6 +104,7 @@
             series2.Legend = "Legend1";
             series2.LegendText = "CH2";
             series2.Name = "Series2";
+            series2.YValuesPerPoint = 2;
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(878, 572);
@@ -376,11 +378,22 @@
             this.saveCsvFileDialog.RestoreDirectory = true;
             this.saveCsvFileDialog.Title = "Save signal values";
             // 
+            // digitalFilterCheckBox
+            // 
+            this.digitalFilterCheckBox.AutoSize = true;
+            this.digitalFilterCheckBox.Location = new System.Drawing.Point(727, 105);
+            this.digitalFilterCheckBox.Name = "digitalFilterCheckBox";
+            this.digitalFilterCheckBox.Size = new System.Drawing.Size(48, 17);
+            this.digitalFilterCheckBox.TabIndex = 15;
+            this.digitalFilterCheckBox.Text = "Filter";
+            this.digitalFilterCheckBox.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(926, 737);
+            this.Controls.Add(this.digitalFilterCheckBox);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.accuracyGroupBox);
             this.Controls.Add(this.mockCheckBox);
@@ -440,6 +453,7 @@
         private System.Windows.Forms.TrackBar numPointsTrackBar;
         private System.Windows.Forms.TextBox numPointsBox;
         private System.Windows.Forms.SaveFileDialog saveCsvFileDialog;
+        private System.Windows.Forms.CheckBox digitalFilterCheckBox;
     }
 }
 
