@@ -62,7 +62,7 @@ namespace Aksolotl
         /// </summary>
         /// <param name="channel">номер канала</param>
         void Save(Channel channel, string fileName);
-        void GetData(List<double> channel1, List<double> channel2, int count);
+        Tuple<double[], double[]> GetData(int count, double deltaVolt);
     }
     abstract class APortBase : IPort
     {
@@ -94,17 +94,6 @@ namespace Aksolotl
             channelData2.Clear();
         }
         public abstract void Close();
-
-        protected virtual void OnFinish()
-        {
-            Close();
-            Finished?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected virtual void OnRead()
-        {
-            Read?.Invoke(this, EventArgs.Empty);
-        }
 
         /// <summary>
         /// Converts data from the buffer to voltage and splits into 2 channels
@@ -188,11 +177,12 @@ namespace Aksolotl
                     break;
             }
         }
-        public virtual void GetData(List<double> channel1, List<double> channel2, int count)
+        public virtual Tuple<double[], double[]> GetData(int count, double deltaVolt)
         {
             lock (obj) {
-                channel1.AddRange(ChannelData1.Skip(Math.Max(0, ChannelData1.Count - count)).Take(Math.Min(count, ChannelData1.Count)));
-                channel2.AddRange(ChannelData2.Skip(Math.Max(0, ChannelData2.Count - count)).Take(Math.Min(count, ChannelData2.Count)));
+                double[] ch1 = ChannelData1.Skip(Math.Max(0, ChannelData1.Count - count)).Take(Math.Min(count, ChannelData1.Count)).Select((x) => x + deltaVolt).ToArray();
+                double[] ch2 = ChannelData2.Skip(Math.Max(0, ChannelData2.Count - count)).Take(Math.Min(count, ChannelData2.Count)).Select((x) => x + deltaVolt).ToArray();
+                return new Tuple<double[], double[]>(ch1, ch2);
             }
         }
     }
@@ -202,7 +192,6 @@ namespace Aksolotl
         SerialPort port = new SerialPort();
         public Port()
         {
-            //port.BaudRate = 9600;
             port.BaudRate = 480000 * 12;
             port.ReadBufferSize = buffer.Length;
             port.Parity = Parity.None;
@@ -210,7 +199,6 @@ namespace Aksolotl
             port.StopBits = StopBits.One;
             port.DtrEnable = false;
             port.RtsEnable = false;
-            //port.DataReceived += Port_DataReceived;
         }
         public override bool IsOpen { get { return port.IsOpen; } }
         public override void Init()
@@ -220,9 +208,6 @@ namespace Aksolotl
             Thread.Sleep(100);
             ChannelData1.Clear();
             ChannelData2.Clear();
-            // buffer[0] = (byte)Accuracy;
-            // port.Write(buffer, 0, 1);
-            // Thread.Sleep(100);
         }
 
         public override void Close()
@@ -257,6 +242,7 @@ namespace Aksolotl
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message);
             }
+            Close();
         }
         void DumpData(byte[] data, int length)
         {
@@ -300,7 +286,7 @@ namespace Aksolotl
                 readBytes += n;
                 Thread.Sleep(20);
             }
-            //OnFinish();
+            Close();
         }
     }
 

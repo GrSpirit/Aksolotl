@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.run_stop = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.checkBox_out_ch1 = new System.Windows.Forms.CheckBox();
-            this.checkBox_out_ch2 = new System.Windows.Forms.CheckBox();
+            this.showCheckBoxCH2 = new System.Windows.Forms.CheckBox();
+            this.showCheckBoxCH1 = new System.Windows.Forms.CheckBox();
             this.radioButton_std = new System.Windows.Forms.RadioButton();
             this.radioButton_dfm = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -50,7 +50,6 @@
             this.button_export_ch2 = new System.Windows.Forms.Button();
             this.button_export_ch1 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.checkBox_fft = new System.Windows.Forms.CheckBox();
             this.mockCheckBox = new System.Windows.Forms.CheckBox();
             this.accuracyRadioButton15 = new System.Windows.Forms.RadioButton();
             this.accuracyRadioButton213 = new System.Windows.Forms.RadioButton();
@@ -74,6 +73,7 @@
             this.multRadioButton = new System.Windows.Forms.RadioButton();
             this.addRadioButton = new System.Windows.Forms.RadioButton();
             this.subRadioButton = new System.Windows.Forms.RadioButton();
+            this.bufferCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -89,9 +89,9 @@
             // 
             // run_stop
             // 
-            this.run_stop.Location = new System.Drawing.Point(702, 25);
+            this.run_stop.Location = new System.Drawing.Point(690, 25);
             this.run_stop.Name = "run_stop";
-            this.run_stop.Size = new System.Drawing.Size(75, 23);
+            this.run_stop.Size = new System.Drawing.Size(93, 23);
             this.run_stop.TabIndex = 0;
             this.run_stop.Text = "run/stop";
             this.run_stop.UseVisualStyleBackColor = true;
@@ -99,52 +99,56 @@
             // 
             // chart1
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chart1.Legends.Add(legend3);
             this.chart1.Location = new System.Drawing.Point(6, 19);
             this.chart1.Name = "chart1";
-            series1.BorderWidth = 3;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Color = System.Drawing.Color.Red;
-            series1.Legend = "Legend1";
-            series1.LegendText = "CH1";
-            series1.Name = "Series1";
-            series2.BorderWidth = 3;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Color = System.Drawing.Color.Blue;
-            series2.Legend = "Legend1";
-            series2.LegendText = "CH2";
-            series2.Name = "Series2";
-            series2.YValuesPerPoint = 2;
-            this.chart1.Series.Add(series1);
-            this.chart1.Series.Add(series2);
+            series4.BorderWidth = 3;
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Color = System.Drawing.Color.Red;
+            series4.Legend = "Legend1";
+            series4.LegendText = "CH1";
+            series4.Name = "Series1";
+            series5.BorderWidth = 3;
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Color = System.Drawing.Color.Blue;
+            series5.Legend = "Legend1";
+            series5.LegendText = "CH2";
+            series5.Name = "Series2";
+            series5.YValuesPerPoint = 2;
+            this.chart1.Series.Add(series4);
+            this.chart1.Series.Add(series5);
             this.chart1.Size = new System.Drawing.Size(878, 572);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "Graf";
             // 
-            // checkBox_out_ch1
+            // showCheckBoxCH2
             // 
-            this.checkBox_out_ch1.AutoSize = true;
-            this.checkBox_out_ch1.Location = new System.Drawing.Point(6, 42);
-            this.checkBox_out_ch1.Name = "checkBox_out_ch1";
-            this.checkBox_out_ch1.Size = new System.Drawing.Size(83, 17);
-            this.checkBox_out_ch1.TabIndex = 3;
-            this.checkBox_out_ch1.Text = "Вывод CH1";
-            this.checkBox_out_ch1.UseVisualStyleBackColor = true;
+            this.showCheckBoxCH2.AutoSize = true;
+            this.showCheckBoxCH2.Checked = true;
+            this.showCheckBoxCH2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showCheckBoxCH2.Location = new System.Drawing.Point(6, 42);
+            this.showCheckBoxCH2.Name = "showCheckBoxCH2";
+            this.showCheckBoxCH2.Size = new System.Drawing.Size(83, 17);
+            this.showCheckBoxCH2.TabIndex = 3;
+            this.showCheckBoxCH2.Text = "Вывод CH2";
+            this.showCheckBoxCH2.UseVisualStyleBackColor = true;
             // 
-            // checkBox_out_ch2
+            // showCheckBoxCH1
             // 
-            this.checkBox_out_ch2.AutoSize = true;
-            this.checkBox_out_ch2.Location = new System.Drawing.Point(6, 19);
-            this.checkBox_out_ch2.Name = "checkBox_out_ch2";
-            this.checkBox_out_ch2.Size = new System.Drawing.Size(83, 17);
-            this.checkBox_out_ch2.TabIndex = 4;
-            this.checkBox_out_ch2.Text = "Вывод CH2";
-            this.checkBox_out_ch2.UseVisualStyleBackColor = true;
+            this.showCheckBoxCH1.AutoSize = true;
+            this.showCheckBoxCH1.Checked = true;
+            this.showCheckBoxCH1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showCheckBoxCH1.Location = new System.Drawing.Point(6, 19);
+            this.showCheckBoxCH1.Name = "showCheckBoxCH1";
+            this.showCheckBoxCH1.Size = new System.Drawing.Size(83, 17);
+            this.showCheckBoxCH1.TabIndex = 4;
+            this.showCheckBoxCH1.Text = "Вывод CH1";
+            this.showCheckBoxCH1.UseVisualStyleBackColor = true;
             // 
             // radioButton_std
             // 
@@ -183,10 +187,9 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.comboBox1);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.checkBox_out_ch2);
-            this.groupBox2.Controls.Add(this.checkBox_out_ch1);
+            this.groupBox2.Controls.Add(this.bufferCheckBox);
+            this.groupBox2.Controls.Add(this.showCheckBoxCH1);
+            this.groupBox2.Controls.Add(this.showCheckBoxCH2);
             this.groupBox2.Location = new System.Drawing.Point(24, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(108, 100);
@@ -198,7 +201,7 @@
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(40, 70);
+            this.comboBox1.Location = new System.Drawing.Point(724, 55);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(59, 21);
             this.comboBox1.TabIndex = 14;
@@ -207,7 +210,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 73);
+            this.label1.Location = new System.Drawing.Point(687, 58);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(31, 13);
             this.label1.TabIndex = 5;
@@ -255,21 +258,10 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Выгрузка данных";
             // 
-            // checkBox_fft
-            // 
-            this.checkBox_fft.AutoSize = true;
-            this.checkBox_fft.Location = new System.Drawing.Point(727, 66);
-            this.checkBox_fft.Name = "checkBox_fft";
-            this.checkBox_fft.Size = new System.Drawing.Size(45, 17);
-            this.checkBox_fft.TabIndex = 13;
-            this.checkBox_fft.Text = "FFT";
-            this.checkBox_fft.UseVisualStyleBackColor = true;
-            this.checkBox_fft.CheckedChanged += new System.EventHandler(this.checkBox_fft_CheckedChanged);
-            // 
             // mockCheckBox
             // 
             this.mockCheckBox.AutoSize = true;
-            this.mockCheckBox.Location = new System.Drawing.Point(727, 83);
+            this.mockCheckBox.Location = new System.Drawing.Point(1345, 25);
             this.mockCheckBox.Name = "mockCheckBox";
             this.mockCheckBox.Size = new System.Drawing.Size(50, 17);
             this.mockCheckBox.TabIndex = 14;
@@ -306,7 +298,7 @@
             this.accuracyGroupBox.Controls.Add(this.accuracyRadioButton213);
             this.accuracyGroupBox.Location = new System.Drawing.Point(291, 12);
             this.accuracyGroupBox.Name = "accuracyGroupBox";
-            this.accuracyGroupBox.Size = new System.Drawing.Size(147, 100);
+            this.accuracyGroupBox.Size = new System.Drawing.Size(126, 100);
             this.accuracyGroupBox.TabIndex = 10;
             this.accuracyGroupBox.TabStop = false;
             this.accuracyGroupBox.Text = "Точность";
@@ -329,7 +321,7 @@
             this.groupBox5.Controls.Add(this.label3);
             this.groupBox5.Controls.Add(this.label2);
             this.groupBox5.Controls.Add(this.frequencyComboBox);
-            this.groupBox5.Location = new System.Drawing.Point(444, 12);
+            this.groupBox5.Location = new System.Drawing.Point(429, 12);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(252, 100);
             this.groupBox5.TabIndex = 11;
@@ -343,14 +335,14 @@
             this.numPointsBox.Name = "numPointsBox";
             this.numPointsBox.Size = new System.Drawing.Size(49, 20);
             this.numPointsBox.TabIndex = 4;
-            this.numPointsBox.Text = "300";
+            this.numPointsBox.Text = "100";
             // 
             // numPointsTrackBar
             // 
             this.numPointsTrackBar.LargeChange = 100;
             this.numPointsTrackBar.Location = new System.Drawing.Point(61, 43);
             this.numPointsTrackBar.Maximum = 200000;
-            this.numPointsTrackBar.Minimum = 5;
+            this.numPointsTrackBar.Minimum = 10;
             this.numPointsTrackBar.Name = "numPointsTrackBar";
             this.numPointsTrackBar.Size = new System.Drawing.Size(185, 45);
             this.numPointsTrackBar.SmallChange = 50;
@@ -405,20 +397,20 @@
             // 
             // chartMath
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chartMath.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chartMath.Legends.Add(legend2);
+            chartArea4.Name = "ChartArea1";
+            this.chartMath.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.chartMath.Legends.Add(legend4);
             this.chartMath.Location = new System.Drawing.Point(6, 19);
             this.chartMath.Name = "chartMath";
-            series3.BorderWidth = 3;
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Color = System.Drawing.Color.Magenta;
-            series3.Legend = "Legend1";
-            series3.LegendText = "RES";
-            series3.Name = "Series1";
-            this.chartMath.Series.Add(series3);
+            series6.BorderWidth = 3;
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Color = System.Drawing.Color.Magenta;
+            series6.Legend = "Legend1";
+            series6.LegendText = "RES";
+            series6.Name = "Series1";
+            this.chartMath.Series.Add(series6);
             this.chartMath.Size = new System.Drawing.Size(878, 572);
             this.chartMath.TabIndex = 2;
             this.chartMath.Text = "Graf";
@@ -513,17 +505,28 @@
             this.subRadioButton.Text = "Вычитание";
             this.subRadioButton.UseVisualStyleBackColor = true;
             // 
+            // bufferCheckBox
+            // 
+            this.bufferCheckBox.AutoSize = true;
+            this.bufferCheckBox.Location = new System.Drawing.Point(6, 65);
+            this.bufferCheckBox.Name = "bufferCheckBox";
+            this.bufferCheckBox.Size = new System.Drawing.Size(58, 17);
+            this.bufferCheckBox.TabIndex = 5;
+            this.bufferCheckBox.Text = "Буфер";
+            this.bufferCheckBox.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1834, 737);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.mathBox);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.accuracyGroupBox);
             this.Controls.Add(this.mockCheckBox);
-            this.Controls.Add(this.checkBox_fft);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -557,8 +560,8 @@
 
         private System.Windows.Forms.Button run_stop;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
-        private System.Windows.Forms.CheckBox checkBox_out_ch1;
-        private System.Windows.Forms.CheckBox checkBox_out_ch2;
+        private System.Windows.Forms.CheckBox showCheckBoxCH2;
+        private System.Windows.Forms.CheckBox showCheckBoxCH1;
         private System.Windows.Forms.RadioButton radioButton_std;
         private System.Windows.Forms.RadioButton radioButton_dfm;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -568,7 +571,6 @@
         private System.Windows.Forms.Button button_export_ch2;
         private System.Windows.Forms.Button button_export_ch1;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.CheckBox checkBox_fft;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox mockCheckBox;
         private System.Windows.Forms.RadioButton accuracyRadioButton15;
@@ -593,6 +595,7 @@
         private System.Windows.Forms.RadioButton fftRadioButton;
         private System.Windows.Forms.MaskedTextBox fftToTextBox;
         private System.Windows.Forms.MaskedTextBox fftFromTextBox;
+        private System.Windows.Forms.CheckBox bufferCheckBox;
     }
 }
 
