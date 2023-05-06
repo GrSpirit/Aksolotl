@@ -33,6 +33,9 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.run_stop = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.checkBox_out_ch1 = new System.Windows.Forms.CheckBox();
@@ -61,7 +64,16 @@
             this.label2 = new System.Windows.Forms.Label();
             this.frequencyComboBox = new System.Windows.Forms.ComboBox();
             this.saveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.digitalFilterCheckBox = new System.Windows.Forms.CheckBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.chartMath = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.mathBox = new System.Windows.Forms.GroupBox();
+            this.fftToTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.fftFromTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.fftRadioButton = new System.Windows.Forms.RadioButton();
+            this.divRadioButton = new System.Windows.Forms.RadioButton();
+            this.multRadioButton = new System.Windows.Forms.RadioButton();
+            this.addRadioButton = new System.Windows.Forms.RadioButton();
+            this.subRadioButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -70,6 +82,9 @@
             this.accuracyGroupBox.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPointsTrackBar)).BeginInit();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartMath)).BeginInit();
+            this.mathBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // run_stop
@@ -335,13 +350,13 @@
             this.numPointsTrackBar.LargeChange = 100;
             this.numPointsTrackBar.Location = new System.Drawing.Point(61, 43);
             this.numPointsTrackBar.Maximum = 200000;
-            this.numPointsTrackBar.Minimum = 100;
+            this.numPointsTrackBar.Minimum = 5;
             this.numPointsTrackBar.Name = "numPointsTrackBar";
             this.numPointsTrackBar.Size = new System.Drawing.Size(185, 45);
             this.numPointsTrackBar.SmallChange = 50;
             this.numPointsTrackBar.TabIndex = 3;
             this.numPointsTrackBar.TickFrequency = 100;
-            this.numPointsTrackBar.Value = 300;
+            this.numPointsTrackBar.Value = 100;
             this.numPointsTrackBar.ValueChanged += new System.EventHandler(this.numPointsTrackBar_ValueChanged);
             // 
             // label3
@@ -378,22 +393,133 @@
             this.saveCsvFileDialog.RestoreDirectory = true;
             this.saveCsvFileDialog.Title = "Save signal values";
             // 
-            // digitalFilterCheckBox
+            // groupBox6
             // 
-            this.digitalFilterCheckBox.AutoSize = true;
-            this.digitalFilterCheckBox.Location = new System.Drawing.Point(727, 105);
-            this.digitalFilterCheckBox.Name = "digitalFilterCheckBox";
-            this.digitalFilterCheckBox.Size = new System.Drawing.Size(48, 17);
-            this.digitalFilterCheckBox.TabIndex = 15;
-            this.digitalFilterCheckBox.Text = "Filter";
-            this.digitalFilterCheckBox.UseVisualStyleBackColor = true;
+            this.groupBox6.Controls.Add(this.chartMath);
+            this.groupBox6.Location = new System.Drawing.Point(930, 128);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(890, 597);
+            this.groupBox6.TabIndex = 8;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Математика";
+            // 
+            // chartMath
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.chartMath.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartMath.Legends.Add(legend2);
+            this.chartMath.Location = new System.Drawing.Point(6, 19);
+            this.chartMath.Name = "chartMath";
+            series3.BorderWidth = 3;
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = System.Drawing.Color.Magenta;
+            series3.Legend = "Legend1";
+            series3.LegendText = "RES";
+            series3.Name = "Series1";
+            this.chartMath.Series.Add(series3);
+            this.chartMath.Size = new System.Drawing.Size(878, 572);
+            this.chartMath.TabIndex = 2;
+            this.chartMath.Text = "Graf";
+            // 
+            // mathBox
+            // 
+            this.mathBox.Controls.Add(this.fftToTextBox);
+            this.mathBox.Controls.Add(this.fftFromTextBox);
+            this.mathBox.Controls.Add(this.fftRadioButton);
+            this.mathBox.Controls.Add(this.divRadioButton);
+            this.mathBox.Controls.Add(this.multRadioButton);
+            this.mathBox.Controls.Add(this.addRadioButton);
+            this.mathBox.Controls.Add(this.subRadioButton);
+            this.mathBox.Location = new System.Drawing.Point(936, 12);
+            this.mathBox.Name = "mathBox";
+            this.mathBox.Size = new System.Drawing.Size(315, 100);
+            this.mathBox.TabIndex = 10;
+            this.mathBox.TabStop = false;
+            this.mathBox.Text = "Выбор операции";
+            // 
+            // fftToTextBox
+            // 
+            this.fftToTextBox.Location = new System.Drawing.Point(183, 64);
+            this.fftToTextBox.Mask = "00000";
+            this.fftToTextBox.Name = "fftToTextBox";
+            this.fftToTextBox.Size = new System.Drawing.Size(44, 20);
+            this.fftToTextBox.TabIndex = 13;
+            this.fftToTextBox.Text = "1000";
+            this.fftToTextBox.ValidatingType = typeof(int);
+            this.fftToTextBox.TextChanged += new System.EventHandler(this.fftFromTextBox_TextChanged);
+            // 
+            // fftFromTextBox
+            // 
+            this.fftFromTextBox.Location = new System.Drawing.Point(183, 38);
+            this.fftFromTextBox.Mask = "00000";
+            this.fftFromTextBox.Name = "fftFromTextBox";
+            this.fftFromTextBox.Size = new System.Drawing.Size(44, 20);
+            this.fftFromTextBox.TabIndex = 12;
+            this.fftFromTextBox.Text = "0";
+            this.fftFromTextBox.ValidatingType = typeof(int);
+            this.fftFromTextBox.TextChanged += new System.EventHandler(this.fftFromTextBox_TextChanged);
+            // 
+            // fftRadioButton
+            // 
+            this.fftRadioButton.AutoSize = true;
+            this.fftRadioButton.Location = new System.Drawing.Point(183, 17);
+            this.fftRadioButton.Name = "fftRadioButton";
+            this.fftRadioButton.Size = new System.Drawing.Size(44, 17);
+            this.fftRadioButton.TabIndex = 9;
+            this.fftRadioButton.Text = "FFT";
+            this.fftRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // divRadioButton
+            // 
+            this.divRadioButton.AutoSize = true;
+            this.divRadioButton.Location = new System.Drawing.Point(92, 39);
+            this.divRadioButton.Name = "divRadioButton";
+            this.divRadioButton.Size = new System.Drawing.Size(70, 17);
+            this.divRadioButton.TabIndex = 8;
+            this.divRadioButton.Text = "Деление";
+            this.divRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // multRadioButton
+            // 
+            this.multRadioButton.AutoSize = true;
+            this.multRadioButton.Location = new System.Drawing.Point(92, 18);
+            this.multRadioButton.Name = "multRadioButton";
+            this.multRadioButton.Size = new System.Drawing.Size(85, 17);
+            this.multRadioButton.TabIndex = 7;
+            this.multRadioButton.Text = "Умножение";
+            this.multRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // addRadioButton
+            // 
+            this.addRadioButton.AutoSize = true;
+            this.addRadioButton.Checked = true;
+            this.addRadioButton.Location = new System.Drawing.Point(6, 19);
+            this.addRadioButton.Name = "addRadioButton";
+            this.addRadioButton.Size = new System.Drawing.Size(76, 17);
+            this.addRadioButton.TabIndex = 5;
+            this.addRadioButton.TabStop = true;
+            this.addRadioButton.Text = "Сложение";
+            this.addRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // subRadioButton
+            // 
+            this.subRadioButton.AutoSize = true;
+            this.subRadioButton.Location = new System.Drawing.Point(6, 41);
+            this.subRadioButton.Name = "subRadioButton";
+            this.subRadioButton.Size = new System.Drawing.Size(80, 17);
+            this.subRadioButton.TabIndex = 6;
+            this.subRadioButton.Text = "Вычитание";
+            this.subRadioButton.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(926, 737);
-            this.Controls.Add(this.digitalFilterCheckBox);
+            this.ClientSize = new System.Drawing.Size(1834, 737);
+            this.Controls.Add(this.mathBox);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.accuracyGroupBox);
             this.Controls.Add(this.mockCheckBox);
@@ -418,6 +544,10 @@
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPointsTrackBar)).EndInit();
+            this.groupBox6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartMath)).EndInit();
+            this.mathBox.ResumeLayout(false);
+            this.mathBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -453,7 +583,16 @@
         private System.Windows.Forms.TrackBar numPointsTrackBar;
         private System.Windows.Forms.TextBox numPointsBox;
         private System.Windows.Forms.SaveFileDialog saveCsvFileDialog;
-        private System.Windows.Forms.CheckBox digitalFilterCheckBox;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartMath;
+        private System.Windows.Forms.GroupBox mathBox;
+        private System.Windows.Forms.RadioButton divRadioButton;
+        private System.Windows.Forms.RadioButton multRadioButton;
+        private System.Windows.Forms.RadioButton addRadioButton;
+        private System.Windows.Forms.RadioButton subRadioButton;
+        private System.Windows.Forms.RadioButton fftRadioButton;
+        private System.Windows.Forms.MaskedTextBox fftToTextBox;
+        private System.Windows.Forms.MaskedTextBox fftFromTextBox;
     }
 }
 

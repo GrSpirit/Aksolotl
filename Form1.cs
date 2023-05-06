@@ -151,17 +151,6 @@ namespace Aksolotl
             double period = 1000.0 / (double)frequency;
             int pointsToSkip = totalPoints / pointsToShow - 1;
 
-            if (digitalFilterCheckBox.Checked) {
-                var coeff = MathNet.Filtering.FIR.FirCoefficients.LowPass(2000000, 2);
-                var filter = new MathNet.Filtering.FIR.OnlineFirFilter(coeff);
-                double[] filtered= filter.ProcessSamples(channelData1.ToArray());
-                channelData1.Clear();
-                channelData1.AddRange(filtered);
-                filtered = filter.ProcessSamples(channelData2.ToArray());
-                channelData2.Clear();
-                channelData2.AddRange(filtered);
-            }
-
             chart1.Series[0].Points.Clear();
             int j = 0;
             for (int i = 0; i < channelData1.Count; i++) {
@@ -175,12 +164,54 @@ namespace Aksolotl
             chart1.Series[1].Points.Clear();
             j = 0;
             for (int i = 0; i < channelData2.Count; i++) {
-                if (j > pointsToSkip) {
+                if (j >= pointsToSkip) {
                     double x = Math.Round(i * period, 3);
                     this.chart1.Series[1].Points.AddXY(x, channelData2[i]);
                     j = 0;
                 }
                 j++;
+            }
+
+            chartMath.Series[0].Points.Clear();
+            if (channelData1.Count > 0 && channelData2.Count > 0) {
+                if (fftRadioButton.Checked) {
+                    bool isOdd = (channelData2.Count & 1) == 1;
+                    double[] fftResult = channelData1.Take(isOdd ? channelData1.Count : (channelData1.Count - 1)).ToArray();
+                    int n = fftResult.Length - 2;
+                    MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(fftResult, n);
+                    int from = int.Parse(fftFromTextBox.Text);
+                    int to = int.Parse(fftToTextBox.Text);
+                    if (from >= fftResult.Length) {
+                        return;
+                    }
+                    for (int x = from; x < Math.Min(to + 1, fftResult.Length); x++) {
+                        this.chartMath.Series[0].Points.AddXY((double)x, fftResult[x]);
+                    }
+                }
+                else {
+                    j = 0;
+                    for (int i = 0; i < Math.Min(channelData1.Count, channelData2.Count); i++) {
+                        if (j >= pointsToSkip) {
+                            double x = Math.Round(i * period, 3);
+                            double y = 0;
+                            if (addRadioButton.Checked) {
+                                y = channelData1[i] + channelData2[i];
+                            }
+                            else if (subRadioButton.Checked) {
+                                y = channelData1[i] - channelData2[i];
+                            }
+                            else if (multRadioButton.Checked) {
+                                y = channelData1[i] * channelData2[i];
+                            }
+                            else if (divRadioButton.Checked) {
+                                y = channelData1[i] / Math.Max(channelData2[i], 0.001);
+                            }
+                            this.chartMath.Series[0].Points.AddXY(x, y);
+                            j = 0;
+                        }
+                        j++;
+                    }
+                }
             }
 
         }
@@ -197,6 +228,14 @@ namespace Aksolotl
             comboBox1.Items.Clear();
             //Добавление найденных портов в бокс
             comboBox1.Items.AddRange(ports);
+        }
+
+        private void fftFromTextBox_TextChanged(object sender, EventArgs e)
+        {
+            MaskedTextBox textBox = sender as MaskedTextBox;
+            if (textBox.Text == "") {
+                textBox.Text = "0";
+            }
         }
     }
 
