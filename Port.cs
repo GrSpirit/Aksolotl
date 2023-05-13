@@ -62,7 +62,7 @@ namespace Aksolotl
         /// </summary>
         /// <param name="channel">номер канала</param>
         void Save(Channel channel, string fileName);
-        void GetData(List<double> channel1, List<double> channel2, int count);
+        Tuple<double[], double[]> GetData(int count, double deltaVolt);
     }
     abstract class APortBase : IPort
     {
@@ -188,11 +188,12 @@ namespace Aksolotl
                     break;
             }
         }
-        public virtual void GetData(List<double> channel1, List<double> channel2, int count)
+        public virtual Tuple<double[], double[]> GetData(int count, double deltaVolt)
         {
             lock (obj) {
-                channel1.AddRange(ChannelData1.Skip(Math.Max(0, ChannelData1.Count - count)).Take(Math.Min(count, ChannelData1.Count)));
-                channel2.AddRange(ChannelData2.Skip(Math.Max(0, ChannelData2.Count - count)).Take(Math.Min(count, ChannelData2.Count)));
+                double[] ch1 = ChannelData1.Skip(Math.Max(0, ChannelData1.Count - count)).Take(Math.Min(count, ChannelData1.Count)).Select((x) => x + deltaVolt).ToArray();
+                double[] ch2 = ChannelData2.Skip(Math.Max(0, ChannelData2.Count - count)).Take(Math.Min(count, ChannelData2.Count)).Select((x) => x + deltaVolt).ToArray();
+                return new Tuple<double[], double[]>(ch1, ch2);
             }
         }
     }
@@ -257,6 +258,7 @@ namespace Aksolotl
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message);
             }
+            Close();
         }
         void DumpData(byte[] data, int length)
         {
@@ -300,7 +302,7 @@ namespace Aksolotl
                 readBytes += n;
                 Thread.Sleep(20);
             }
-            //OnFinish();
+            Close();
         }
     }
 

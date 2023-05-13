@@ -144,76 +144,73 @@ namespace Aksolotl
         {
             int pointsToShow = MAX_POINTS_TO_SHOW; 
             int totalPoints = int.Parse(numPointsBox.Text, System.Globalization.NumberStyles.None);
-            List<double> channelData1 = new List<double>(totalPoints);
-            List<double> channelData2 = new List<double>(totalPoints);
-            Port.GetData(channelData1, channelData2, totalPoints);
+            double deltaVolt = bufferCheckBox.Checked ? -1.65 : 0;
+            (var channelData1, var channelData2) = Port.GetData(totalPoints, deltaVolt);
             int frequency = (int)frequencyComboBox.SelectedValue;
             double period = 1000.0 / (double)frequency;
             int pointsToSkip = totalPoints / pointsToShow - 1;
 
             chart1.Series[0].Points.Clear();
-            int j = 0;
-            for (int i = 0; i < channelData1.Count; i++) {
-                if (j >= pointsToSkip) {
-                    double x = Math.Round(i * period, 3);
-                    this.chart1.Series[0].Points.AddXY(x, channelData1[i]);
-                    j = 0;
+            if (showCheckBox1.Checked) {
+                int j = 0;
+                for (int i = 0; i < channelData1.Length; i++) {
+                    if (j >= pointsToSkip) {
+                        double x = Math.Round(i * period, 3);
+                        this.chart1.Series[0].Points.AddXY(x, channelData1[i]);
+                        j = 0;
+                    }
+                    j++;
                 }
-                j++;
             }
             chart1.Series[1].Points.Clear();
-            j = 0;
-            for (int i = 0; i < channelData2.Count; i++) {
-                if (j >= pointsToSkip) {
-                    double x = Math.Round(i * period, 3);
-                    this.chart1.Series[1].Points.AddXY(x, channelData2[i]);
-                    j = 0;
+            if (showCheckBox2.Checked) {
+                int j = 0;
+                for (int i = 0; i < channelData2.Length; i++) {
+                    if (j >= pointsToSkip) {
+                        double x = Math.Round(i * period, 3);
+                        this.chart1.Series[1].Points.AddXY(x, channelData2[i]);
+                        j = 0;
+                    }
+                    j++;
                 }
-                j++;
             }
 
             chartMath.Series[0].Points.Clear();
-            if (channelData1.Count > 0 && channelData2.Count > 0) {
-                if (fftRadioButton.Checked) {
-                    bool isOdd = (channelData2.Count & 1) == 1;
-                    double[] fftResult = channelData1.Take(isOdd ? channelData1.Count : (channelData1.Count - 1)).ToArray();
-                    int n = fftResult.Length - 2;
-                    MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(fftResult, n);
-                    int from = int.Parse(fftFromTextBox.Text);
-                    int to = int.Parse(fftToTextBox.Text);
-                    if (from >= fftResult.Length) {
-                        return;
-                    }
-                    for (int x = from; x < Math.Min(to + 1, fftResult.Length); x++) {
-                        this.chartMath.Series[0].Points.AddXY((double)x, fftResult[x]);
-                    }
+            if (channelData1.Length > 0 && fftRadioButton.Checked) {
+                MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(channelData1, channelData1.Length - 2);
+                int from = int.Parse(fftFromTextBox.Text);
+                int to = int.Parse(fftToTextBox.Text);
+                if (from >= channelData1.Length || to <= from) {
+                    return;
                 }
-                else {
-                    j = 0;
-                    for (int i = 0; i < Math.Min(channelData1.Count, channelData2.Count); i++) {
-                        if (j >= pointsToSkip) {
-                            double x = Math.Round(i * period, 3);
-                            double y = 0;
-                            if (addRadioButton.Checked) {
-                                y = channelData1[i] + channelData2[i];
-                            }
-                            else if (subRadioButton.Checked) {
-                                y = channelData1[i] - channelData2[i];
-                            }
-                            else if (multRadioButton.Checked) {
-                                y = channelData1[i] * channelData2[i];
-                            }
-                            else if (divRadioButton.Checked) {
-                                y = channelData1[i] / Math.Max(channelData2[i], 0.001);
-                            }
-                            this.chartMath.Series[0].Points.AddXY(x, y);
-                            j = 0;
-                        }
-                        j++;
-                    }
+                for (int x = from; x < Math.Min(to + 1, channelData1.Length - 2); x++) {
+                    this.chartMath.Series[0].Points.AddXY(x, channelData1[x]);
                 }
             }
-
+            else if (channelData1.Length > 0 && channelData2.Length > 0) {
+                int j = 0;
+                for (int i = 0; i < Math.Min(channelData1.Length, channelData2.Length); i++) {
+                    if (j >= pointsToSkip) {
+                        double x = Math.Round(i * period, 3);
+                        double y = 0;
+                        if (addRadioButton.Checked) {
+                            y = channelData1[i] + channelData2[i];
+                        }
+                        else if (subRadioButton.Checked) {
+                            y = channelData1[i] - channelData2[i];
+                        }
+                        else if (multRadioButton.Checked) {
+                            y = channelData1[i] * channelData2[i];
+                        }
+                        else if (divRadioButton.Checked) {
+                            y = channelData1[i] / Math.Max(channelData2[i], 0.001);
+                        }
+                        this.chartMath.Series[0].Points.AddXY(x, y);
+                        j = 0;
+                    }
+                    j++;
+                }
+            }
         }
 
         private void numPointsTrackBar_ValueChanged(object sender, EventArgs e)
@@ -238,72 +235,4 @@ namespace Aksolotl
             }
         }
     }
-
-    public class FFT
-    {
-        /// <summary>
-        /// Вычисление поворачивающего модуля e^(-i*2*PI*k/N)
-        /// </summary>
-        /// <param name="k"></param>
-        /// <param name="N"></param>
-        /// <returns></returns>
-        private static Complex w(int k, int N)
-        {
-            if (k % N == 0) return 1;
-            double arg = -2 * Math.PI * k / N;
-            return new Complex(Math.Cos(arg), Math.Sin(arg));
-        }
-        /// <summary>
-        /// Возвращает спектр сигнала
-        /// </summary>
-        /// <param name="x">Массив значений сигнала. Количество значений должно быть степенью 2</param>
-        /// <returns>Массив со значениями спектра сигнала</returns>
-        public static Complex[] fft(Complex[] x)
-        {
-            Complex[] X;
-            int N = x.Length;
-            if (N == 2)
-            {
-                X = new Complex[2];
-                X[0] = x[0] + x[1];
-                X[1] = x[0] - x[1];
-            }
-            else
-            {
-                Complex[] x_even = new Complex[N / 2];
-                Complex[] x_odd = new Complex[N / 2];
-                for (int i = 0; i < N / 2; i++)
-                {
-                    x_even[i] = x[2 * i];
-                    x_odd[i] = x[2 * i + 1];
-                }
-                Complex[] X_even = fft(x_even);
-                Complex[] X_odd = fft(x_odd);
-                X = new Complex[N];
-                for (int i = 0; i < N / 2; i++)
-                {
-                    X[i] = X_even[i] + w(i, N) * X_odd[i];
-                    X[i + N / 2] = X_even[i] - w(i, N) * X_odd[i];
-                }
-            }
-            return X;
-        }
-        /// <summary>
-        /// Центровка массива значений полученных в fft (спектральная составляющая при нулевой частоте будет в центре массива)
-        /// </summary>
-        /// <param name="X">Массив значений полученный в fft</param>
-        /// <returns></returns>
-        public static Complex[] nfft(Complex[] X)
-        {
-            int N = X.Length;
-            Complex[] X_n = new Complex[N];
-            for (int i = 0; i < N / 2; i++)
-            {
-                X_n[i] = X[N / 2 + i];
-                X_n[N / 2 + i] = X[i];
-            }
-            return X_n;
-        }
-    }
-
 }
