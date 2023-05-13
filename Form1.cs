@@ -135,27 +135,26 @@ namespace Aksolotl
             int frequency = (int)frequencyComboBox.SelectedValue;
             double period = 1000.0 / (double)frequency;
             int pointsToSkip = totalPoints / pointsToShow - 1;
-            int j;
 
-            chart1.Series[0].Points.Clear();
+            chartSignal.Series[0].Points.Clear();
             if (showCheckBoxCH1.Checked) {
-                j = 0;
+                int j = 0;
                 for (int i = 0; i < channelData1.Length; i++) {
                     if (j >= pointsToSkip) {
-                        double x = Math.Round(i * period);
-                        this.chart1.Series[0].Points.AddXY(x, channelData1[i]);
+                        double x = Math.Round(i * period, 3);
+                        chartSignal.Series[0].Points.AddXY(x, channelData1[i]);
                         j = 0;
                     }
                     j++;
                 }
             }
-            chart1.Series[1].Points.Clear();
+            chartSignal.Series[1].Points.Clear();
             if (showCheckBoxCH2.Checked) {
-                j = 0;
+                int j = 0;
                 for (int i = 0; i < channelData2.Length; i++) {
                     if (j >= pointsToSkip) {
-                        double x = Math.Round(i * period);
-                        this.chart1.Series[1].Points.AddXY(x, channelData2[i]);
+                        double x = Math.Round(i * period, 3);
+                        chartSignal.Series[1].Points.AddXY(x, channelData2[i]);
                         j = 0;
                     }
                     j++;
@@ -171,7 +170,7 @@ namespace Aksolotl
                     return;
                 }
                 for (int x = from; x < Math.Min(to + 1, channelData1.Length - 2); x++) {
-                    this.chartMath.Series[0].Points.AddXY(x, channelData1[x]);
+                    chartMath.Series[0].Points.AddXY(x, channelData1[x]);
                 }
             }
             else if (channelData1.Length > 0 && channelData2.Length > 0) {
@@ -187,12 +186,11 @@ namespace Aksolotl
                             ? (a / Math.Max(b, 0.001))
                             : 0
                 );
-                j = 0;
-                int i = 0;
+                int i = 0, j = 0;
                 foreach (var y in result) {
                     if (j >= pointsToSkip) {
-                        double x = Math.Round(i * period);
-                        this.chartMath.Series[0].Points.AddXY(x, y);
+                        double x = Math.Round(i * period, 3);
+                        chartMath.Series[0].Points.AddXY(x, y);
                         j = 0;
                     }
                     j++;
