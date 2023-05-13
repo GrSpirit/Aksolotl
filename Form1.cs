@@ -150,25 +150,25 @@ namespace Aksolotl
             double period = 1000.0 / (double)frequency;
             int pointsToSkip = totalPoints / pointsToShow - 1;
 
-            chart1.Series[0].Points.Clear();
+            chartSignal.Series[0].Points.Clear();
             if (showCheckBox1.Checked) {
                 int j = 0;
                 for (int i = 0; i < channelData1.Length; i++) {
                     if (j >= pointsToSkip) {
                         double x = Math.Round(i * period, 3);
-                        this.chart1.Series[0].Points.AddXY(x, channelData1[i]);
+                        this.chartSignal.Series[0].Points.AddXY(x, channelData1[i]);
                         j = 0;
                     }
                     j++;
                 }
             }
-            chart1.Series[1].Points.Clear();
+            chartSignal.Series[1].Points.Clear();
             if (showCheckBox2.Checked) {
                 int j = 0;
                 for (int i = 0; i < channelData2.Length; i++) {
                     if (j >= pointsToSkip) {
                         double x = Math.Round(i * period, 3);
-                        this.chart1.Series[1].Points.AddXY(x, channelData2[i]);
+                        this.chartSignal.Series[1].Points.AddXY(x, channelData2[i]);
                         j = 0;
                     }
                     j++;
@@ -184,7 +184,7 @@ namespace Aksolotl
                     return;
                 }
                 for (int x = from; x < Math.Min(to + 1, channelData1.Length - 2); x++) {
-                    this.chartMath.Series[0].Points.AddXY(x, channelData1[x]);
+                    chartMath.Series[0].Points.AddXY(x, channelData1[x]);
                 }
             }
             else if (channelData1.Length > 0 && channelData2.Length > 0) {
@@ -205,11 +205,12 @@ namespace Aksolotl
                         else if (divRadioButton.Checked) {
                             y = channelData1[i] / Math.Max(channelData2[i], 0.001);
                         }
-                        this.chartMath.Series[0].Points.AddXY(x, y);
+                        chartMath.Series[0].Points.AddXY(x, y);
                         j = 0;
                     }
                     j++;
                 }
+
             }
         }
 
@@ -227,7 +228,7 @@ namespace Aksolotl
             comboBox1.Items.AddRange(ports);
         }
 
-        private void fftFromTextBox_TextChanged(object sender, EventArgs e)
+        private void fftTextBox_TextChanged(object sender, EventArgs e)
         {
             MaskedTextBox textBox = sender as MaskedTextBox;
             if (textBox.Text == "") {

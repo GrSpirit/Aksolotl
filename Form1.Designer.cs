@@ -29,21 +29,22 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.run_stop = new System.Windows.Forms.Button();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartSignal = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.showCheckBox1 = new System.Windows.Forms.CheckBox();
             this.showCheckBox2 = new System.Windows.Forms.CheckBox();
             this.radioButton_std = new System.Windows.Forms.RadioButton();
             this.radioButton_dfm = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.bufferCheckBox = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -73,8 +74,7 @@
             this.multRadioButton = new System.Windows.Forms.RadioButton();
             this.addRadioButton = new System.Windows.Forms.RadioButton();
             this.subRadioButton = new System.Windows.Forms.RadioButton();
-            this.bufferCheckBox = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSignal)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -97,34 +97,34 @@
             this.run_stop.UseVisualStyleBackColor = true;
             this.run_stop.Click += new System.EventHandler(this.run_stop_Click);
             // 
-            // chart1
+            // chartSignal
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
-            this.chart1.Location = new System.Drawing.Point(6, 19);
-            this.chart1.Name = "chart1";
-            series4.BorderWidth = 3;
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Color = System.Drawing.Color.Red;
-            series4.Legend = "Legend1";
-            series4.LegendText = "CH1";
-            series4.Name = "Series1";
-            series5.BorderWidth = 3;
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Color = System.Drawing.Color.Blue;
-            series5.Legend = "Legend1";
-            series5.LegendText = "CH2";
-            series5.Name = "Series2";
-            series5.YValuesPerPoint = 2;
-            this.chart1.Series.Add(series4);
-            this.chart1.Series.Add(series5);
-            this.chart1.Size = new System.Drawing.Size(878, 572);
-            this.chart1.TabIndex = 2;
-            this.chart1.Text = "Graf";
+            chartArea1.Name = "ChartArea1";
+            this.chartSignal.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartSignal.Legends.Add(legend1);
+            this.chartSignal.Location = new System.Drawing.Point(6, 19);
+            this.chartSignal.Name = "chartSignal";
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = System.Drawing.Color.Red;
+            series1.Legend = "Legend1";
+            series1.LegendText = "CH1";
+            series1.Name = "Series1";
+            series2.BorderWidth = 3;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Color = System.Drawing.Color.Blue;
+            series2.Legend = "Legend1";
+            series2.LegendText = "CH2";
+            series2.Name = "Series2";
+            series2.YValuesPerPoint = 2;
+            this.chartSignal.Series.Add(series1);
+            this.chartSignal.Series.Add(series2);
+            this.chartSignal.Size = new System.Drawing.Size(878, 572);
+            this.chartSignal.TabIndex = 2;
+            this.chartSignal.Text = "Graf";
             // 
             // showCheckBox1
             // 
@@ -177,7 +177,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.chart1);
+            this.groupBox1.Controls.Add(this.chartSignal);
             this.groupBox1.Location = new System.Drawing.Point(24, 128);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(890, 597);
@@ -196,6 +196,16 @@
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Каналы";
+            // 
+            // bufferCheckBox
+            // 
+            this.bufferCheckBox.AutoSize = true;
+            this.bufferCheckBox.Location = new System.Drawing.Point(6, 65);
+            this.bufferCheckBox.Name = "bufferCheckBox";
+            this.bufferCheckBox.Size = new System.Drawing.Size(58, 17);
+            this.bufferCheckBox.TabIndex = 14;
+            this.bufferCheckBox.Text = "Буфер";
+            this.bufferCheckBox.UseVisualStyleBackColor = true;
             // 
             // comboBox1
             // 
@@ -397,20 +407,20 @@
             // 
             // chartMath
             // 
-            chartArea4.Name = "ChartArea1";
-            this.chartMath.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chartMath.Legends.Add(legend4);
+            chartArea2.Name = "ChartArea1";
+            this.chartMath.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartMath.Legends.Add(legend2);
             this.chartMath.Location = new System.Drawing.Point(6, 19);
             this.chartMath.Name = "chartMath";
-            series6.BorderWidth = 3;
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series6.Color = System.Drawing.Color.Magenta;
-            series6.Legend = "Legend1";
-            series6.LegendText = "RES";
-            series6.Name = "Series1";
-            this.chartMath.Series.Add(series6);
+            series3.BorderWidth = 3;
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = System.Drawing.Color.Magenta;
+            series3.Legend = "Legend1";
+            series3.LegendText = "RES";
+            series3.Name = "Series1";
+            this.chartMath.Series.Add(series3);
             this.chartMath.Size = new System.Drawing.Size(878, 572);
             this.chartMath.TabIndex = 2;
             this.chartMath.Text = "Graf";
@@ -440,7 +450,7 @@
             this.fftToTextBox.TabIndex = 13;
             this.fftToTextBox.Text = "1000";
             this.fftToTextBox.ValidatingType = typeof(int);
-            this.fftToTextBox.TextChanged += new System.EventHandler(this.fftFromTextBox_TextChanged);
+            this.fftToTextBox.TextChanged += new System.EventHandler(this.fftTextBox_TextChanged);
             // 
             // fftFromTextBox
             // 
@@ -451,7 +461,7 @@
             this.fftFromTextBox.TabIndex = 12;
             this.fftFromTextBox.Text = "0";
             this.fftFromTextBox.ValidatingType = typeof(int);
-            this.fftFromTextBox.TextChanged += new System.EventHandler(this.fftFromTextBox_TextChanged);
+            this.fftFromTextBox.TextChanged += new System.EventHandler(this.fftTextBox_TextChanged);
             // 
             // fftRadioButton
             // 
@@ -505,16 +515,6 @@
             this.subRadioButton.Text = "Вычитание";
             this.subRadioButton.UseVisualStyleBackColor = true;
             // 
-            // bufferCheckBox
-            // 
-            this.bufferCheckBox.AutoSize = true;
-            this.bufferCheckBox.Location = new System.Drawing.Point(6, 65);
-            this.bufferCheckBox.Name = "bufferCheckBox";
-            this.bufferCheckBox.Size = new System.Drawing.Size(58, 17);
-            this.bufferCheckBox.TabIndex = 14;
-            this.bufferCheckBox.Text = "Буфер";
-            this.bufferCheckBox.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -535,7 +535,7 @@
             this.Name = "Form1";
             this.Text = "Аксолотль";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSignal)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -559,7 +559,7 @@
         #endregion
 
         private System.Windows.Forms.Button run_stop;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSignal;
         private System.Windows.Forms.CheckBox showCheckBox1;
         private System.Windows.Forms.CheckBox showCheckBox2;
         private System.Windows.Forms.RadioButton radioButton_std;
