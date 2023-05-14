@@ -53,6 +53,7 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.mockCheckBox = new System.Windows.Forms.CheckBox();
             this.accuracyGroupBox = new System.Windows.Forms.GroupBox();
+            this.triggerTextBox = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -72,7 +73,6 @@
             this.multRadioButton = new System.Windows.Forms.RadioButton();
             this.addRadioButton = new System.Windows.Forms.RadioButton();
             this.subRadioButton = new System.Windows.Forms.RadioButton();
-            this.triggerTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartSignal)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -289,6 +289,15 @@
             this.accuracyGroupBox.TabStop = false;
             this.accuracyGroupBox.Text = "Триггер";
             // 
+            // triggerTextBox
+            // 
+            this.triggerTextBox.Location = new System.Drawing.Point(6, 19);
+            this.triggerTextBox.Name = "triggerTextBox";
+            this.triggerTextBox.Size = new System.Drawing.Size(58, 20);
+            this.triggerTextBox.TabIndex = 0;
+            this.triggerTextBox.Text = "2.0";
+            this.triggerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.TriggerTextBox_Validating);
+            // 
             // backgroundWorker1
             // 
             this.backgroundWorker1.WorkerSupportsCancellation = true;
@@ -490,15 +499,6 @@
             this.subRadioButton.TabIndex = 6;
             this.subRadioButton.Text = "Вычитание";
             this.subRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // triggerTextBox
-            // 
-            this.triggerTextBox.Location = new System.Drawing.Point(6, 19);
-            this.triggerTextBox.Name = "triggerTextBox";
-            this.triggerTextBox.Size = new System.Drawing.Size(58, 20);
-            this.triggerTextBox.TabIndex = 0;
-            this.triggerTextBox.Text = "1.65";
-            this.triggerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.TriggerTextBox_Validating);
             // 
             // Form1
             // 

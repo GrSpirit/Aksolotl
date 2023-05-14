@@ -200,6 +200,8 @@ namespace Aksolotl
 
             chartMath.Series[0].Points.Clear();
             if (fftRadioButton.Checked && channelData1.Length > 0) {
+                chartMath.ChartAreas[0].AxisX.Minimum = double.NaN;
+                chartMath.ChartAreas[0].AxisX.Maximum = double.NaN;
                 MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(channelData1, channelData1.Length - 2);
                 int from = int.Parse(fftFromTextBox.Text);
                 int to = int.Parse(fftToTextBox.Text);
@@ -211,6 +213,9 @@ namespace Aksolotl
                 }
             }
             else if (channelData1.Length > 0 && channelData2.Length > 0) {
+                chartMath.ChartAreas[0].AxisX.Minimum = -totalPoints / 2.0;
+                chartMath.ChartAreas[0].AxisX.Maximum = totalPoints / 2.0;
+
                 int n = Math.Min(channelData1.Length, channelData2.Length);
                 var result = channelData1.Zip(channelData2, (a, b) =>
                           addRadioButton.Checked
@@ -226,7 +231,7 @@ namespace Aksolotl
                 int i = 0, j = 0;
                 foreach (var y in result) {
                     if (j >= pointsToSkip) {
-                        double x = Math.Round(i * period, 3);
+                        double x = Math.Round((i - triggerPos) * period, 3);
                         chartMath.Series[0].Points.AddXY(x, y);
                         j = 0;
                     }
