@@ -52,8 +52,6 @@
             this.button_export_ch1 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.mockCheckBox = new System.Windows.Forms.CheckBox();
-            this.accuracyRadioButton15 = new System.Windows.Forms.RadioButton();
-            this.accuracyRadioButton213 = new System.Windows.Forms.RadioButton();
             this.accuracyGroupBox = new System.Windows.Forms.GroupBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -74,6 +72,7 @@
             this.multRadioButton = new System.Windows.Forms.RadioButton();
             this.addRadioButton = new System.Windows.Forms.RadioButton();
             this.subRadioButton = new System.Windows.Forms.RadioButton();
+            this.triggerTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartSignal)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -99,6 +98,8 @@
             // 
             // chartSignal
             // 
+            chartArea1.AxisX.Maximum = 100D;
+            chartArea1.AxisX.Minimum = -100D;
             chartArea1.Name = "ChartArea1";
             this.chartSignal.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
@@ -278,40 +279,15 @@
             this.mockCheckBox.Text = "Fake";
             this.mockCheckBox.UseVisualStyleBackColor = true;
             // 
-            // accuracyRadioButton15
-            // 
-            this.accuracyRadioButton15.AutoSize = true;
-            this.accuracyRadioButton15.Checked = true;
-            this.accuracyRadioButton15.Location = new System.Drawing.Point(6, 19);
-            this.accuracyRadioButton15.Name = "accuracyRadioButton15";
-            this.accuracyRadioButton15.Size = new System.Drawing.Size(62, 17);
-            this.accuracyRadioButton15.TabIndex = 5;
-            this.accuracyRadioButton15.TabStop = true;
-            this.accuracyRadioButton15.Text = "Грубый";
-            this.accuracyRadioButton15.UseVisualStyleBackColor = true;
-            this.accuracyRadioButton15.CheckedChanged += new System.EventHandler(this.accuracyRadioButton15_CheckedChanged);
-            // 
-            // accuracyRadioButton213
-            // 
-            this.accuracyRadioButton213.AutoSize = true;
-            this.accuracyRadioButton213.Location = new System.Drawing.Point(6, 41);
-            this.accuracyRadioButton213.Name = "accuracyRadioButton213";
-            this.accuracyRadioButton213.Size = new System.Drawing.Size(63, 17);
-            this.accuracyRadioButton213.TabIndex = 6;
-            this.accuracyRadioButton213.TabStop = true;
-            this.accuracyRadioButton213.Text = "Точный";
-            this.accuracyRadioButton213.UseVisualStyleBackColor = true;
-            // 
             // accuracyGroupBox
             // 
-            this.accuracyGroupBox.Controls.Add(this.accuracyRadioButton15);
-            this.accuracyGroupBox.Controls.Add(this.accuracyRadioButton213);
+            this.accuracyGroupBox.Controls.Add(this.triggerTextBox);
             this.accuracyGroupBox.Location = new System.Drawing.Point(291, 12);
             this.accuracyGroupBox.Name = "accuracyGroupBox";
             this.accuracyGroupBox.Size = new System.Drawing.Size(126, 100);
             this.accuracyGroupBox.TabIndex = 10;
             this.accuracyGroupBox.TabStop = false;
-            this.accuracyGroupBox.Text = "Точность";
+            this.accuracyGroupBox.Text = "Триггер";
             // 
             // backgroundWorker1
             // 
@@ -321,7 +297,7 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 2000;
+            this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // groupBox5
@@ -436,7 +412,7 @@
             this.mathBox.Controls.Add(this.subRadioButton);
             this.mathBox.Location = new System.Drawing.Point(936, 12);
             this.mathBox.Name = "mathBox";
-            this.mathBox.Size = new System.Drawing.Size(315, 100);
+            this.mathBox.Size = new System.Drawing.Size(245, 100);
             this.mathBox.TabIndex = 10;
             this.mathBox.TabStop = false;
             this.mathBox.Text = "Выбор операции";
@@ -515,6 +491,15 @@
             this.subRadioButton.Text = "Вычитание";
             this.subRadioButton.UseVisualStyleBackColor = true;
             // 
+            // triggerTextBox
+            // 
+            this.triggerTextBox.Location = new System.Drawing.Point(6, 19);
+            this.triggerTextBox.Name = "triggerTextBox";
+            this.triggerTextBox.Size = new System.Drawing.Size(58, 20);
+            this.triggerTextBox.TabIndex = 0;
+            this.triggerTextBox.Text = "1.65";
+            this.triggerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.TriggerTextBox_Validating);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -573,8 +558,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox mockCheckBox;
-        private System.Windows.Forms.RadioButton accuracyRadioButton15;
-        private System.Windows.Forms.RadioButton accuracyRadioButton213;
         private System.Windows.Forms.GroupBox accuracyGroupBox;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Timer timer1;
@@ -596,6 +579,7 @@
         private System.Windows.Forms.MaskedTextBox fftToTextBox;
         private System.Windows.Forms.MaskedTextBox fftFromTextBox;
         private System.Windows.Forms.CheckBox bufferCheckBox;
+        private System.Windows.Forms.TextBox triggerTextBox;
     }
 }
 

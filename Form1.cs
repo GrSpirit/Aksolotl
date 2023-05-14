@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Aksolotl
@@ -15,6 +17,7 @@ namespace Aksolotl
         private const int MAX_POINTS_TO_SHOW = 2000;
         private readonly Port serialPort = new Port();
         private readonly PortMock fakePort = new PortMock();
+        private static Regex floatNumberRegex = new Regex(@"^\d+(\.\d+)?$");
         private IPort Port {
             get {
                 if (UseMock) return fakePort;
@@ -99,17 +102,6 @@ namespace Aksolotl
             }
         }
 
-        private void accuracyRadioButton15_CheckedChanged(object sender, EventArgs e)
-        {
-            if (accuracyRadioButton213.Checked) {
-                Port.Accuracy = PortAccuracy.FINE;
-            } else {
-                Port.Accuracy = PortAccuracy.RAW;
-            }
-            if (Port.IsOpen) {
-                Port.Init();
-            }
-        }
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             try {
@@ -129,19 +121,64 @@ namespace Aksolotl
         private void timer1_Tick(object sender, EventArgs e)
         {
             int pointsToShow = MAX_POINTS_TO_SHOW; 
-            int totalPoints = int.Parse(numPointsBox.Text, System.Globalization.NumberStyles.None);
+            int totalPoints = int.Parse(numPointsBox.Text, NumberStyles.None);
             double deltaVolt = bufferCheckBox.Checked ? -1.65 : 0;
-            (var channelData1, var channelData2) =  Port.GetData(totalPoints, deltaVolt);
+            (var channelData1, var channelData2) =  Port.GetData(totalPoints * 2, deltaVolt);
             int frequency = (int)frequencyComboBox.SelectedValue;
             double period = 1000.0 / (double)frequency;
             int pointsToSkip = totalPoints / pointsToShow - 1;
+            int triggerPos = 0;
+
+            chartSignal.ChartAreas[0].AxisX.Minimum = -totalPoints / 2.0;
+            chartSignal.ChartAreas[0].AxisX.Maximum = totalPoints / 2.0;
 
             chartSignal.Series[0].Points.Clear();
             if (showCheckBoxCH1.Checked) {
                 int j = 0;
+                if (triggerTextBox.Text != "") {
+                    double trigger;
+                    int pos1 = 0;
+                    int pos2 = 0;
+                    if (double.TryParse(triggerTextBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out trigger)) {
+                        for (int i = channelData1.Length / 2; i < channelData1.Length; i++) {
+                            if (channelData1[i - 1] <= trigger && channelData1[i] >= trigger) {
+                                pos1 = i;
+                                break;
+                            }
+                        }
+                        for (int i = pos1 + 1; i < channelData1.Length; i++) {
+                            if (channelData1[i - 1] >= trigger && channelData1[i] <= trigger) {
+                                pos2 = i;
+                                break;
+                            }
+                        }
+                        if (pos1 != 0 && pos2 != 0) {
+                            triggerPos = (pos1 + pos2) / 2;
+                        }
+                        pos1 = 0;
+                        pos2 = 0;
+                        for (int i = channelData1.Length / 2; i > 0; i--) {
+                            if (channelData1[i - 1] <= trigger && channelData1[i] >= trigger) {
+                                pos1 = i;
+                                break;
+                            }
+                        }
+                        for (int i = pos1 + 1; i < channelData1.Length / 2; i++) {
+                            if (channelData1[i - 1] >= trigger && channelData1[i] <= trigger) {
+                                pos2 = i;
+                                break;
+                            }
+                        }
+                        if (pos1 != 0 && pos2 != 0) {
+                            if (channelData1.Length / 2 - (pos1 + pos2) / 2 < triggerPos - channelData1.Length / 2) {
+                                triggerPos = (pos1 + pos2) / 2;
+                            }
+                        }
+                    }
+                }
                 for (int i = 0; i < channelData1.Length; i++) {
                     if (j >= pointsToSkip) {
-                        double x = Math.Round(i * period, 3);
+                        double x = Math.Round((i - triggerPos) * period, 3);
                         chartSignal.Series[0].Points.AddXY(x, channelData1[i]);
                         j = 0;
                     }
@@ -153,7 +190,7 @@ namespace Aksolotl
                 int j = 0;
                 for (int i = 0; i < channelData2.Length; i++) {
                     if (j >= pointsToSkip) {
-                        double x = Math.Round(i * period, 3);
+                        double x = Math.Round((i - triggerPos) * period, 3);
                         chartSignal.Series[1].Points.AddXY(x, channelData2[i]);
                         j = 0;
                     }
@@ -170,7 +207,7 @@ namespace Aksolotl
                     return;
                 }
                 for (int x = from; x < Math.Min(to + 1, channelData1.Length - 2); x++) {
-                    chartMath.Series[0].Points.AddXY(x, channelData1[x]);
+                    chartMath.Series[0].Points.AddXY(x, Math.Max(0, channelData1[x]));
                 }
             }
             else if (channelData1.Length > 0 && channelData2.Length > 0) {
@@ -219,6 +256,12 @@ namespace Aksolotl
             if (textBox.Text == "") {
                 textBox.Text = "0";
             }
+        }
+
+        private void TriggerTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            e.Cancel = !floatNumberRegex.IsMatch(textBox.Text);
         }
     }
 }
