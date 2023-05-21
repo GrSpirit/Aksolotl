@@ -14,8 +14,12 @@ namespace Aksolotl
 
     enum PortMode: byte
     {
-        DFM = 0b11110001,
-        STD = 0b11110000
+        DFM = 0b11111111,
+        STD = 0b11110000,
+        SAM15 = 0b11110001,
+        SAM84 = 0b11110010,
+        SAM144 = 0b11110011,
+        SAM480 = 0b11110100,
     }
     enum PortAccuracy: byte
     {
@@ -57,12 +61,14 @@ namespace Aksolotl
         /// </summary>
         PortMode Mode { get; set; }
         PortAccuracy Accuracy { get; set; }
+        UInt16 SampleRate { get; set; }
         /// <summary>
         /// Записать полученные данные в файл
         /// </summary>
         /// <param name="channel">номер канала</param>
         void Save(Channel channel, string fileName);
-        Tuple<double[], double[]> GetData(int count, double deltaVolt);
+        Tuple<double[], double[], UInt16> GetData(int count, double deltaVolt);
+        double SamplePeriod { get; }
     }
     abstract class APortBase : IPort
     {
@@ -77,7 +83,7 @@ namespace Aksolotl
         public virtual IList<double> ChannelData1 { get { return channelData1; } }
         public virtual IList<double> ChannelData2 { get { return channelData2; } }
         protected int readBytes = 0;
-        protected byte[] buffer = new byte[1000];
+        protected byte[] buffer = new byte[100000];
 
         public event EventHandler Finished;
         public event EventHandler Read;
@@ -85,6 +91,24 @@ namespace Aksolotl
         private PortMode mode = PortMode.STD;
         public virtual PortMode Mode { get { return mode; } set { mode = value; } }
         public virtual PortAccuracy Accuracy { get; set; }
+        public virtual UInt16 SampleRate { get; set; }
+        public virtual double SamplePeriod { get {
+                switch(Mode) {
+                    case PortMode.STD:
+                        return 0.5;
+                    case PortMode.SAM15:
+                        return 0.9;
+                    case PortMode.SAM84:
+                        return 3.2;
+                    case PortMode.SAM144:
+                        return 5.2;
+                    case PortMode.SAM480:
+                        return 16.4 * 2;
+                    default:
+                        return 0.5 / 3;
+                }
+            } 
+        }
         public abstract void Init();
         public virtual void Open(string portName, IsProcessCanceled processCanceled)
         {
@@ -126,17 +150,19 @@ namespace Aksolotl
                 // Определяем канал
                 UInt16 userData = data16[0];
                 var channel = (userData & (1 << 1)) == (1 << 1) ? ChannelData2 : ChannelData1;
+                SampleRate = data16[1];
 
-                for (int i = 1; i < n; i++) {
+                for (int i = 2; i < n; i++) {
                     if (channel.Count >= MAX_BYTES_TO_READ) {
                         channel.Clear();
                     }
                     var d = data16[i];
                     if (d == 0xDEAD) {
-                        if (i + 1 < (length - offset) / 2) {
+                        if (i + 2 < (length - offset) / 2) {
                             userData = data16[i + 1];
                             channel = (userData & (1 << 1)) == (1 << 1) ? ChannelData2 : ChannelData1;
-                            i++;
+                            SampleRate = data16[i + 2];
+                            i += 2;
                         }
                     }
                     else {
@@ -161,7 +187,7 @@ namespace Aksolotl
             StreamWriter writer = new StreamWriter(fileName);
             foreach (double y in data) {
                 writer.Write(y);
-                writer.Write(";");
+                writer.Write("\n");
             }
         }
         public virtual void Save(Channel channel, string fileName)
@@ -177,12 +203,12 @@ namespace Aksolotl
                     break;
             }
         }
-        public virtual Tuple<double[], double[]> GetData(int count, double deltaVolt)
+        public virtual Tuple<double[], double[], UInt16> GetData(int count, double deltaVolt)
         {
             lock (obj) {
                 double[] ch1 = ChannelData1.Skip(Math.Max(0, ChannelData1.Count - count)).Take(Math.Min(count, ChannelData1.Count)).Select((x) => x + deltaVolt).ToArray();
                 double[] ch2 = ChannelData2.Skip(Math.Max(0, ChannelData2.Count - count)).Take(Math.Min(count, ChannelData2.Count)).Select((x) => x + deltaVolt).ToArray();
-                return new Tuple<double[], double[]>(ch1, ch2);
+                return new Tuple<double[], double[], UInt16>(ch1, ch2, SampleRate);
             }
         }
     }
@@ -205,7 +231,7 @@ namespace Aksolotl
         {
             buffer[0] = (byte)Mode;
             port.Write(buffer, 0, 1);
-            Thread.Sleep(100);
+            Thread.Sleep(8);
             ChannelData1.Clear();
             ChannelData2.Clear();
         }

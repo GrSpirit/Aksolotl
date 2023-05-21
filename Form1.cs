@@ -30,6 +30,12 @@ namespace Aksolotl
             public string Text { get; set; }
             public int Value { get; set; }
         }
+
+        private class SampleItem
+        {
+            public string Text { get; set; }
+            public PortMode Value { get; set; }
+        }
         public Form1()
         {
             InitializeComponent();
@@ -55,6 +61,19 @@ namespace Aksolotl
             frequencyComboBox.DisplayMember = "Text";
             frequencyComboBox.ValueMember = "Value";
             frequencyComboBox.SelectedIndex = 0;
+
+            var samples = new List<SampleItem>() {
+                new SampleItem{Text = "Standard 500 ns", Value=PortMode.STD},
+                new SampleItem{Text = "Sample rate 900 ns", Value=PortMode.SAM15},
+                new SampleItem{Text = "Sample rate 3.2 mks", Value=PortMode.SAM84},
+                new SampleItem{Text = "Sample rate 5.2 mks", Value=PortMode.SAM144},
+                new SampleItem{Text = "Sample rate 16.4 mks", Value=PortMode.SAM480},
+                new SampleItem{Text = "Triple fast 166.6 ns", Value=PortMode.DFM},
+            };
+            sampleComboBox.DataSource = samples;
+            sampleComboBox.DisplayMember = "Text";
+            sampleComboBox.ValueMember = "Value";
+            sampleComboBox.SelectedIndex = 0;
         }
 
         private void run_stop_Click(object sender, EventArgs e)
@@ -123,9 +142,10 @@ namespace Aksolotl
             int pointsToShow = MAX_POINTS_TO_SHOW; 
             int totalPoints = int.Parse(numPointsBox.Text, NumberStyles.None);
             double deltaVolt = bufferCheckBox.Checked ? -1.65 : 0;
-            (var channelData1, var channelData2) =  Port.GetData(totalPoints * 2, deltaVolt);
+            (var channelData1, var channelData2, var sampleRate) =  Port.GetData(totalPoints * 2, deltaVolt);
             int frequency = (int)frequencyComboBox.SelectedValue;
-            double period = 1000.0 / (double)frequency;
+            //double period = 1000.0 / (double)frequency;
+            double period = Port.SamplePeriod;
             int pointsToSkip = totalPoints / pointsToShow - 1;
             int triggerPos = 0;
 
@@ -267,6 +287,16 @@ namespace Aksolotl
         {
             TextBox textBox = sender as TextBox;
             e.Cancel = !floatNumberRegex.IsMatch(textBox.Text);
+        }
+
+        private void sampleComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (sampleComboBox.SelectedValue is PortMode) {
+                Port.Mode = (PortMode)sampleComboBox.SelectedValue;
+                if (Port.IsOpen) {
+                    Port.Init();
+                }
+            }
         }
     }
 }

@@ -73,6 +73,7 @@
             this.multRadioButton = new System.Windows.Forms.RadioButton();
             this.addRadioButton = new System.Windows.Forms.RadioButton();
             this.subRadioButton = new System.Windows.Forms.RadioButton();
+            this.sampleComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartSignal)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -500,11 +501,22 @@
             this.subRadioButton.Text = "Вычитание";
             this.subRadioButton.UseVisualStyleBackColor = true;
             // 
+            // sampleComboBox
+            // 
+            this.sampleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.sampleComboBox.FormattingEnabled = true;
+            this.sampleComboBox.Location = new System.Drawing.Point(1199, 49);
+            this.sampleComboBox.Name = "sampleComboBox";
+            this.sampleComboBox.Size = new System.Drawing.Size(185, 21);
+            this.sampleComboBox.TabIndex = 5;
+            this.sampleComboBox.SelectedIndexChanged += new System.EventHandler(this.sampleComboBox_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1834, 737);
+            this.Controls.Add(this.sampleComboBox);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.mathBox);
@@ -580,6 +592,7 @@
         private System.Windows.Forms.MaskedTextBox fftFromTextBox;
         private System.Windows.Forms.CheckBox bufferCheckBox;
         private System.Windows.Forms.TextBox triggerTextBox;
+        private System.Windows.Forms.ComboBox sampleComboBox;
     }
 }
 
